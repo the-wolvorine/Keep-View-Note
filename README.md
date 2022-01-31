@@ -2,6 +2,8 @@
 Start creating notes and save the information to view it later
 ### Group Name: Quad-Squad
 
+This app was build using [Brief: Evernote Replacement](https://github.com/thegoldenmule/csci-5030/blob/main/notes/briefs/evernote.md#brief-evernote-replacement).
+
 ## Customer Description
 **Keep View Note** is primarily a **_note-saving app_**. One can create a new note and save it to view later. The user needs to signup in order to create a note and needs to be logged in to review the information that he saved before. Every note is saved and related to a user-specific profile. The note can be shared through mail or other social media & it can even be published on the web.
 
