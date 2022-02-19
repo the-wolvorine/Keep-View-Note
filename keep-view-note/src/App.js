@@ -1,13 +1,14 @@
-import './App.css';
+import "./App.css";
+import ViewCount from "./ViewCount.jsx";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        Keep View Note
-      </header>
+    <div>
+    <center><ViewCount/></center>
+    <div>
+    </div>
     </div>
   );
 }
-
+  
 export default App;

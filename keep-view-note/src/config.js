@@ -1,15 +1,24 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "@firebase/firestore";
+import firebase from 'firebase';
+import { initializeApp } from 'firebase/app';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDF7i_GDk0iCB3pE4l4cGGSrIkzFb4u14I",
-    authDomain: "keep-view-note.firebaseapp.com",
-    projectId: "keep-view-note",
-    storageBucket: "keep-view-note.appspot.com",
-    messagingSenderId: "789526994850",
-    appId: "1:789526994850:web:8afea2f32bcfa91a989cfb",
-    measurementId: "G-FT2VSQRPGQ"
-};
+const firebaseConfig={
+    apiKey: "AIzaSyAGcujzRJjlZZ7OyKRBZxmsOnz231WhXSI",
+    authDomain: "note-d6caf.firebaseapp.com",
+    databaseURL: "https://note-d6caf-default-rtdb.firebaseio.com",
+    projectId: "note-d6caf",
+    storageBucket: "note-d6caf.appspot.com",
+    messagingSenderId: "1091351237546",
+    appId: "1:1091351237546:web:480cf8ef80c26d6b1611d3",
+    measurementId: "G-J9PGSK3HZX"
+  };
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+  //firebase.initializeApp(firebaseConfig);
+
+  //export const db = firebase.firestore();
+
+  //export default firebase;
+
+firebase.initializeApp(firebaseConfig);
+var db = firebase.firestore();
+  
+export default db;
