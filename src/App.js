@@ -7,13 +7,12 @@ import About from "./About";
 function App() {
   return (
     <div>
-      <Header />
-      <center><ViewCount/></center>
       <Router>
-           <Routes>
-                 <Route exact path='/' element={< ViewCount />}></Route>
-                 <Route exact path='/about' element={<About/>}></Route>
-          </Routes>
+        <Header />
+          <Routes>
+            <Route exact path='/' element={< ViewCount />}></Route>
+            <Route exact path='/about' element={<About/>}></Route>
+        </Routes>
        </Router>
     </div>
   );
