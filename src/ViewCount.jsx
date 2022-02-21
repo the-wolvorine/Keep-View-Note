@@ -3,7 +3,6 @@ import "./App.css";
 import db from "./config";
   
 function ViewCount() {
-  const [cViewCount, setcViewCount] = useState("");
   const [keepviewnote, setkeepviewnote] = useState([]);
   useEffect(() => {
     db.collection("keep-view-note").onSnapshot((snapshot) => {
@@ -16,7 +15,7 @@ function ViewCount() {
     });
   }, []);
   
-//increase view count on every refresh
+  //increase view count on every refresh
   window.addEventListener('load', (event) => {
     db.collection("keep-view-note").doc("1")
     .get()
@@ -30,7 +29,8 @@ function ViewCount() {
       else {
         alert("No such document")
       }
-    }).catch(function(error) {
+    })
+    .catch(function(error) {
       alert("Error getting document")
     });
   });  
@@ -49,7 +49,6 @@ function ViewCount() {
           ))}
           </tbody>
         </table>
-         {cViewCount} 
     </div>
   );
 }
