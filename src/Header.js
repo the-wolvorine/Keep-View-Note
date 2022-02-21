@@ -27,7 +27,8 @@ function Header() {
                         </div>
                         <li>
                             <a class="nav-link text-dark">
-                                <span class="border border-dark rounded h-25 d-inline-block w-70 p-2 custom-li">Sign in</span>
+                                <span class="border border-dark rounded h-25 d-inline-block w-70 p-2 custom-li">
+                                <Link class="nav-link active text-dark" to="/register">Sign Up</Link></span>
                             </a>
                         </li>
                         
