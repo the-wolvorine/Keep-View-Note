@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import db from "./config";
+import CountUp from 'react-countup';
+import 'bootstrap/dist/css/bootstrap.css';
   
 function ViewCount() {
   const [keepviewnote, setkeepviewnote] = useState([]);
@@ -36,19 +38,11 @@ function ViewCount() {
   });  
   
   return (
-    <div>
-        <table>
-          <tbody>
-          <tr>
-            <th>viewcount</th>
-          </tr>
-          {keepviewnote?.map(({ id, data }) => (
-            <tr key={id}>
-              <td>{data.viewcount}</td>
-            </tr>
-          ))}
-          </tbody>
-        </table>
+    <div class="pb-2 text-center custom-styles">
+      <h1>View Counter</h1>
+      {keepviewnote?.map(({ id, data }) => (
+        <CountUp end={data.viewcount} duration={0.5}></CountUp>
+      ))}
     </div>
   );
 }
