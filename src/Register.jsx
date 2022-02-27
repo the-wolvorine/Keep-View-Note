@@ -46,7 +46,7 @@ function Register() {
              <form>
 Name: 
     <div className="row align-items-center g-3">
-             <input
+      <input
         type="text"
         className="row align-items-center g-3"
         placeholder="Name"
