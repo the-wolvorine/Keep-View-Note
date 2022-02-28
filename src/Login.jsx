@@ -2,6 +2,7 @@ import db from "./config";
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
+import AuthenticationService from "./AuthenticationService";
 
 function Login(){
   const [userEmail, setUserEmail] = useState("");
@@ -33,12 +34,16 @@ function Login(){
               {
                  sendSubmit();
               }
+              else{
+                alert("Please enter valid credentials")
+              }
           }
           
       });
     }))  
   }
   const sendSubmit = () => {
+      AuthenticationService.registerSuccessfulLogin(userEmail,userPassword)
       navigate("/welcome",{state:{email:userEmail}});
       
     };
