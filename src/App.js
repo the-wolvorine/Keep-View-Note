@@ -8,6 +8,7 @@ import Login from "./Login.jsx";
 import Welcome from "./Welcome";
 import withNavigation from "./WithNavigation";
 import Logout from "./Logout";
+import Aroute from "./Aroute";
 
 function App() {
   const HeaderWithNavigation = withNavigation(Header);
@@ -17,11 +18,11 @@ function App() {
         <HeaderWithNavigation />
           <Routes>
             <Route exact path='/' element={< ViewCount />}></Route>
-            <Route exact path='/about' element={<About/>}></Route>
+            <Route path="/about" element={<Aroute><About/></Aroute>} />
             <Route exact path='/register' element={<Register/>}></Route>
             <Route exact path='/login' element={<Login/>}></Route>
-            <Route exact path='/welcome' element={<Welcome/>}></Route>
-            <Route exact path='/logout' element={<Logout/>}></Route>
+            <Route path="/welcome" element={<Aroute><Welcome/></Aroute>} />
+            <Route path="/logout" element={<Aroute><Logout/></Aroute>} />
         </Routes>
        </Router>
     </div>
