@@ -8,10 +8,9 @@ import AuthenticationService from './AuthenticationService';
 function Header() {
     const isUserLoggedIn = AuthenticationService.isUserLoggedIn();
     return(
-        <header >
-            <div class="shadow-lg p-3 mb-5 bg-white rounded">
+        <header class="header-css">
+            <div class="shadow-lg p-3 bg-white rounded">
                 <nav class="navbar navbar-expand-lg navbar-custom">
-                    <div class="container">
                         <a class="navbar-brand" href="#">
                         <img src={logo} alt="..." height="50" />
                         </a>
@@ -25,26 +24,25 @@ function Header() {
                             {isUserLoggedIn && <li class="nav-item nav-link active"><Link class="nav-link active text-dark" to="/profile">Profile</Link></li>}
                             </ul>
                         </div>
-                        {!isUserLoggedIn && <li>
+                        {!isUserLoggedIn && <li class="custom-li">
                             <a class="nav-link text-dark">
-                                <span class="border border-dark rounded h-25 d-inline-block w-70 p-2 custom-li">
+                                <span class="border border-dark rounded h-25 d-inline-block w-70 p-2">
                                 <Link class="nav-link active text-dark" to="/register">Sign Up</Link></span>
                             </a>
                         </li>}
-                        {!isUserLoggedIn && <li>
+                        {!isUserLoggedIn && <li class="custom-li">
                             <a class="nav-link text-dark">
-                                <span class="border border-dark rounded h-25 d-inline-block w-70 p-2 custom-li">
+                                <span class="border border-dark rounded h-25 d-inline-block w-70 p-2">
                                 <Link class="nav-link active text-dark" to="/login">Sign In</Link></span>
                             </a>
                         </li>}
-                        {isUserLoggedIn && <li><a class="nav-link text-dark">
-                        <span class="border border-dark rounded h-25 d-inline-block w-70 p-2 custom-li">
+                        {isUserLoggedIn && <li class="custom-li"><a class="nav-link text-dark">
+                        <span class="border border-dark rounded h-25 d-inline-block w-70 p-2">
                         <Link class="nav-link active text-dark" to="/logout" onClick={AuthenticationService.logout}>Logout</Link>
                         </span>
                         </a>
                         </li>}
                         
-                    </div>
                 </nav>
             </div>
         </header>

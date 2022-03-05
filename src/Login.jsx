@@ -51,34 +51,32 @@ function Login(){
     authenticate();
   }
   return(
-  <div>
-      <center>
-      <br/>
-      <br/>
-      Email:<br/><br/><input
-      type="text"
-      className="row align-items-center g-3"
-      placeholder="email address"
-      value={userEmail}
-      onChange={(e) => setUserEmail(e.target.value)}
-      onKeyPress={(e) => { if (e.key === "Enter") { loginClicked();}}}
-      />
-      <br/>
-      Password:<br/><br/><input
-      type="password"
-      className="row align-items-center g-3"
-      placeholder="password"
-      value={userPassword}
-      onChange={(e) => setUserPassword(e.target.value)}
-      onKeyPress={(e) => { if (e.key === "Enter") { loginClicked();}}}
-      />
-      <br/>
-      <button onClick={loginClicked} className="btn btn-primary">Login</button>
-      </center>
-  </div>
-  )
+    <div class="mask d-flex align-items-center gradient-custom-3">
+    <div class="container">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style={{borderRadius: '15px' ,margin: '1rem'}}>
+            <div class="card-body p-5">
+            <h2 class="text-capitalize text-center p-2">Sign in</h2>
+              <form>
+                <div class="form-outline mb-4">
+                  <input type="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)}/> 
+                </div> 
+                <div class="form-outline mb-4">
+                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password"  value={userPassword} onChange={(e) => setUserPassword(e.target.value)}/>  
+                </div>
+                <div class="d-flex justify-content-center">
+                <button onClick={loginClicked} className="btn btn-block btn-lg btn-dark">Login</button>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
-
 
 
 export default Login;
