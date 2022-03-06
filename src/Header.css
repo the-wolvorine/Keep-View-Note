@@ -2,6 +2,10 @@
   height: 40px;
 }
 .custom-li {
-  margin-bottom: 25px;
-  padding: 5px;
+  display: block;
+}
+.header-css {
+  position: sticky;
+  top: 0;
+  z-index: 3000;
 }
