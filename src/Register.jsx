@@ -11,6 +11,10 @@ function Register() {
   const [userMobile, setUserMobile] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [usersData, setUsersData] = useState([]);
+  const [nameErr,setNameErr] = useState({});
+  const [emailErr,setEmailErr] = useState({});
+  const [mobileErr,setMobileErr] = useState({});
+  const [passwordErr,setPasswordErr] = useState({});
   
   useEffect(() => {
     db.collection("usersData").onSnapshot((snapshot) => {
@@ -21,11 +25,12 @@ function Register() {
         }))
       );
     });
-    console.log({ usersData });
   }, []);
   
   const submit = (e) => {
     e.preventDefault();
+    const isValid = formValidation();
+    if(isValid){
     db.collection("usersData").add({
       name: userName,
       password: userPassword,
@@ -39,6 +44,85 @@ function Register() {
     setUserEmail("");
     alertF()
   };
+}
+
+const formValidation = () =>{
+  const nameErr = {};
+  const emailErr = {};
+  const mobileErr = {};
+  const passwordErr = {};
+  let isValid = true;
+  const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$');
+  const validPassword = new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
+  const up= new RegExp('[A-Z]');
+  const lo= new RegExp('[a-z]');
+  const nu= new RegExp('[0-9]');
+  const sc= new RegExp('[#?!@$%^&*-]')
+  
+  if(!validEmail.test(userEmail) && !userEmail.length<1){
+    emailErr.emailError = "Please enter valid email address"
+    isValid = false;
+  }
+  if(!up.test(userPassword) && userPassword.length>=8){
+    passwordErr.upperCase = "Password must contain atleast one upper case letter"
+    isValid = false;
+  }
+  if(!lo.test(userPassword) && userPassword.length>=8){
+    passwordErr.lowerCase = "Password must contain atleast one lower case letter"
+    isValid = false;
+  }
+  if(!nu.test(userPassword) && userPassword.length>=8){
+    passwordErr.numberCase = "Password must contain atleast one number"
+    isValid = false;
+  }
+  if(!sc.test(userPassword) && userPassword.length>=8){
+    passwordErr.specialCase = "Password must contain atleast one special character"
+    isValid = false;
+  }
+  if(!validPassword.test(userPassword) && userPassword.length>=8){
+    passwordErr.emailError = "Please enter valid password"
+    isValid = false;
+  }
+  if(userName.trim().length<4 && !userName.length<1){
+    nameErr.nameShort= "Name is too short"
+    isValid = false;
+  }
+  if(userMobile.trim().length>10){
+    mobileErr.invalidMobile= "Please enter valid mobile number"
+    isValid = false;
+  }
+  if(userMobile.trim().length<10 && !userMobile.length<1){
+    mobileErr.invalidMobile= "Please enter valid mobile number"
+    isValid = false;
+  }
+  if(userPassword.length<8 && !userPassword.length<1){
+    passwordErr.passwordShort= "Password is too short"
+    isValid = false;
+  }
+  if(userPassword.length<1){
+    passwordErr.passwordEnter= "Please enter your password"
+    isValid = false;
+  }
+  if(userEmail.length<1){
+    emailErr.emailEnter= "Please enter your email address"
+    isValid = false;
+  }
+  if(userName.length<1){
+    nameErr.nameEnter= "Please enter your Name"
+    isValid = false;
+  }
+  if(userMobile.length<1){
+    mobileErr.mobileEnter= "Please enter your mobile number"
+    isValid = false;
+  }
+
+  setNameErr(nameErr);
+  setEmailErr(emailErr);
+  setMobileErr(mobileErr);
+  setPasswordErr(passwordErr)
+  return isValid;
+
+}
   
   function alertF(){
       alert("Registered Succesfully")
@@ -55,15 +139,27 @@ function Register() {
                 <form>
                   <div class="form-outline mb-4">
                     <input type="text" id="form3Example1cg" class="form-control form-control-lg" placeholder="Full Name" value={userName} onChange={(e) => setUserName(e.target.value)}/>
+                    {Object.keys(nameErr).map((key)=>{
+                    return <div style={{color : "red"}}>{nameErr[key]}</div>
+                     })}
                   </div>
                   <div class="form-outline mb-4">
                     <input type="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)}/> 
+                    {Object.keys(emailErr).map((key)=>{
+                    return <div style={{color : "red"}}>{emailErr[key]}</div>
+                     })}
                   </div> 
                   <div class="form-outline mb-4">
                     <input type="tel" id="form3Example4cdg" class="form-control form-control-lg" placeholder="Mobile" value={userMobile} onChange={(e) => setUserMobile(e.target.value)}/>
+                    {Object.keys(mobileErr).map((key)=>{
+                    return <div style={{color : "red"}}>{mobileErr[key]}</div>
+                     })}
                   </div>
                   <div class="form-outline mb-4">
                     <input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password"  value={userPassword} onChange={(e) => setUserPassword(e.target.value)}/>  
+                    {Object.keys(passwordErr).map((key)=>{
+                    return <div style={{color : "red"}}>{passwordErr[key]}</div>
+                     })}
                   </div>
                   <div class="d-flex justify-content-center">
                     <button type="submit" onClick={submit} class="btn btn-block btn-lg btn-dark">Register</button>
