@@ -1,5 +1,5 @@
 import db from "./config";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import "./Register.css";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -15,7 +15,8 @@ function Register() {
   const [emailErr,setEmailErr] = useState({});
   const [mobileErr,setMobileErr] = useState({});
   const [passwordErr,setPasswordErr] = useState({});
-  
+  const valid = useRef(true)
+
   useEffect(() => {
     db.collection("usersData").onSnapshot((snapshot) => {
       setUsersData(
@@ -58,7 +59,42 @@ const formValidation = () =>{
   const lo= new RegExp('[a-z]');
   const nu= new RegExp('[0-9]');
   const sc= new RegExp('[#?!@$%^&*-]')
-  
+
+  db.collection("usersData")
+    .get()
+    .then((function(doc){
+      let count=0;
+      let c=doc.size;
+      let c1=0;
+      doc.forEach(element => { 
+        count=count+1;
+          if(element.data().email===userEmail)
+          {
+          }
+          else{
+            c1=c1+1;
+          }
+          if(count===c)
+          {
+              if(c1===c)
+              {
+              }
+              else
+              {
+                const emailErr = {};
+                emailErr.emailExists = "We already have your email in our database, Please login instead"
+                setEmailErr(emailErr)
+                valid.current= false;
+              }
+            }
+                
+      });
+    }))
+  if(valid.current===false)
+  {
+    isValid=false;
+    valid.current=true;
+  }
   if(!validEmail.test(userEmail) && !userEmail.length<1){
     emailErr.emailError = "Please enter valid email address"
     isValid = false;
