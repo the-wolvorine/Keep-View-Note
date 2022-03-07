@@ -16,8 +16,7 @@ function Login(){
         setUsersData(
           snapshot.docs.map((doc) => ({
             data: doc.data(),
-          }))
-          
+          }))      
         );
       });
     }, []);
@@ -59,10 +58,10 @@ function Login(){
             <div class="card-body p-5">
             <h2 class="text-capitalize text-center p-2">Sign in</h2>
                 <div class="form-outline mb-4">
-                  <input type="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)}/> 
+                  <input type="email" id="form3Example3cg" class="form-control form-control-lg" placeholder="Email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { loginClicked();}}}/> 
                 </div> 
                 <div class="form-outline mb-4">
-                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password"  value={userPassword} onChange={(e) => setUserPassword(e.target.value)}/>  
+                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password"  value={userPassword} onChange={(e) => setUserPassword(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { loginClicked();}}}/>  
                 </div>
                 <div class="d-flex justify-content-center">
                 <button onClick={loginClicked} className="btn btn-block btn-lg btn-dark">Login</button>
