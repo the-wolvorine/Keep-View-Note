@@ -19,7 +19,7 @@ function App() {
         <HeaderWithNavigation />
           <Routes>
             <Route exact path='/' element={< ViewCount />}></Route>
-            <Route path="/about" element={<Aroute><About/></Aroute>} />
+            <Route path="/about" element={<About/>}></Route>
             <Route exact path='/register' element={<Register/>}></Route>
             <Route exact path='/login' element={<Login/>}></Route>
             <Route path="/welcome" element={<Aroute><Welcome/></Aroute>} />
