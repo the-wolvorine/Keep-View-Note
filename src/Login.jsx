@@ -16,8 +16,7 @@ function Login(){
         setUsersData(
           snapshot.docs.map((doc) => ({
             data: doc.data(),
-          }))
-          
+          }))      
         );
       });
     }, []);
