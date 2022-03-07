@@ -20,7 +20,7 @@ function Header() {
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto custom-ul">   
                             <li class="nav-item nav-link active"><Link class="nav-link active text-dark" to="/">Home</Link> </li>
-                            {isUserLoggedIn && <li class="nav-item nav-link active"><Link class="nav-link active text-dark" to="/about">About</Link></li>}
+                            <li class="nav-item nav-link active"><Link class="nav-link active text-dark" to="/about">About Us</Link></li>
                             {isUserLoggedIn && <li class="nav-item nav-link active"><Link class="nav-link active text-dark" to="/profile">Profile</Link></li>}
                             </ul>
                         </div>
