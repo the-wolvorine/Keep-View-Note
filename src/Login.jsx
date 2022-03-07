@@ -12,41 +12,49 @@ function Login(){
 
   
   useEffect(() => {
-      db.collection("usersData").onSnapshot((snapshot) => {
-        setUsersData(
-          snapshot.docs.map((doc) => ({
-            data: doc.data(),
-          }))      
-        );
-      });
-    }, []);
+        db.collection("usersData").onSnapshot((snapshot) => {
+          setUsersData(
+            snapshot.docs.map((doc) => ({
+              data: doc.data(),
+            }))      
+          );
+        });
+   }, []);
 
-    function authenticate(){
-
-    db.collection("usersData")
-    .get()
-    .then((function(doc){
-      doc.forEach(element => { 
-          if(element.data().email===userEmail)
-          {
-              if(element.data().password===userPassword)
-              {
-                 sendSubmit();
-              }
-              else{
-                alert("Please enter valid credentials")
-              }
-          }
-          
-      });
-    }))  
-  }
-  const sendSubmit = () => {
+  function authenticate(){
+     db.collection("usersData")
+      .get()
+      .then((function(doc){
+        let c=doc.size;
+        let count=0;
+        doc.forEach(element => { 
+            if(element.data().email===userEmail)
+            {
+                if(element.data().password===userPassword)
+                {
+                   sendSubmit();
+                }
+                else{
+                  alert("Please enter valid credentials")
+                }
+            }
+            else{
+              count=count+1;
+            }
+            if(count===c)
+            {
+              alert("Sorry we didn't find your account, Please sign up")
+            }        
+        });
+      }))  
+   }
+  
+ const sendSubmit = () => {
       AuthenticationService.registerSuccessfulLogin(userEmail,userPassword)
       navigate("/welcome",{state:{email:userEmail}});
       
-    };
-  const loginClicked= (e) => {
+  };
+ const loginClicked= (e) => {
     authenticate();
   }
   return(
