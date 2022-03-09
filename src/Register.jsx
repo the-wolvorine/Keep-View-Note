@@ -1,5 +1,5 @@
 import db from "./config";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import "./Register.css";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -15,19 +15,52 @@ function Register() {
   const [emailErr,setEmailErr] = useState({});
   const [mobileErr,setMobileErr] = useState({});
   const [passwordErr,setPasswordErr] = useState({});
-  const valid = useRef(true)
+  const [valid,setValid] = useState(true); 
 
   useEffect(() => {
-    db.collection("usersData").onSnapshot((snapshot) => {
-      setUsersData(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-        }))
-      );
-    });
-  }, []);
-  
+    const emailErr = {};
+    if(valid===false){
+    emailErr.emailExists = "We already have your email in our database, Please login instead"
+    setEmailErr(emailErr)
+    }
+    if(valid===true)
+    {
+    }
+  }, [valid]);
+
+  useEffect(() => {
+    if(userEmail.includes("@"))
+    {
+      db.collection("usersData")
+      .get()
+      .then((function(doc){
+        let count=0;
+        let c=doc.size;
+        let c1=0;
+        doc.forEach(element => { 
+          count=count+1;
+            if(element.data().email===userEmail)
+            {
+            }
+            else{
+              c1=c1+1;
+            }
+            if(count===c)
+            {
+                if(c1!==c)
+                {
+                  setValid(false)
+                }
+                else{
+                  setValid(true)
+                }
+              }
+                  
+        });
+      }))
+    }
+  },[userEmail]);
+
   const submit = (e) => {
     e.preventDefault();
     const isValid = formValidation();
@@ -47,6 +80,7 @@ function Register() {
   };
 }
 
+
 const formValidation = () =>{
   const nameErr = {};
   const emailErr = {};
@@ -54,47 +88,16 @@ const formValidation = () =>{
   const passwordErr = {};
   let isValid = true;
   const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$');
-  const validPassword = new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
   const up= new RegExp('[A-Z]');
   const lo= new RegExp('[a-z]');
   const nu= new RegExp('[0-9]');
   const sc= new RegExp('[#?!@$%^&*-]')
 
-  db.collection("usersData")
-    .get()
-    .then((function(doc){
-      let count=0;
-      let c=doc.size;
-      let c1=0;
-      doc.forEach(element => { 
-        count=count+1;
-          if(element.data().email===userEmail)
-          {
-          }
-          else{
-            c1=c1+1;
-          }
-          if(count===c)
-          {
-              if(c1===c)
-              {
-              }
-              else
-              {
-                const emailErr = {};
-                emailErr.emailExists = "We already have your email in our database, Please login instead"
-                setEmailErr(emailErr)
-                valid.current= false;
-              }
-            }
-                
-      });
-    }))
-  if(valid.current===false)
+  if(valid===false)
   {
-    isValid=false;
-    valid.current=true;
+    isValid = false;
   }
+
   if(!validEmail.test(userEmail) && !userEmail.length<1){
     emailErr.emailError = "Please enter valid email address"
     isValid = false;
@@ -113,10 +116,6 @@ const formValidation = () =>{
   }
   if(!sc.test(userPassword) && userPassword.length>=8){
     passwordErr.specialCase = "Password must contain atleast one special character"
-    isValid = false;
-  }
-  if(!validPassword.test(userPassword) && userPassword.length>=8){
-    passwordErr.emailError = "Please enter valid password"
     isValid = false;
   }
   if(userName.trim().length<4 && !userName.length<1){
