@@ -7,12 +7,13 @@ import { faEvernote} from '@fortawesome/free-brands-svg-icons';
 import "./App.css";
 
 function Welcome(){
-    const location = useLocation();
     let email = sessionStorage.getItem('authenticatedUser');
     const [name, setName] = useState("");
     const [textarea, setTextarea] = useState("");
     const [clicked,setClicked] = useState(false);
+    const [notes, setNotes] = useState({});
     const [id,setId] = useState("")
+    const [clickedViewNote,setClickedViewNote] = useState(false);
 
     useEffect(()=>{
         if(clicked===true)
@@ -24,6 +25,17 @@ function Welcome(){
             setClicked(false);
         }
       },[clicked])
+
+    useEffect(()=>{
+        if(clickedViewNote===true)
+        {
+            setClickedViewNote(true);
+        }
+        if(clickedViewNote===false)
+        {
+            setClickedViewNote(false);
+        }
+      },[clickedViewNote])
       
     useEffect(() => {
         db.collection("usersData")
@@ -33,8 +45,9 @@ function Welcome(){
               if(element.data().email===email)
               {
                   setName(element.data().name)
+                  setNotes(element.data().notes)
                   setId(element.id)
-              }
+              }    
           });
         })) 
         }, []);
@@ -46,30 +59,47 @@ function Welcome(){
         {merge:true})
         alert("Note saved Succesfully")
         setClicked(false)
-        setTextarea("")
+        db.collection("usersData").doc(id).get() .then((function(doc){
+        setNotes(doc.data().notes)
+        })) 
       }
         
     function addNotes(){
         setClicked(true);
       }
       
+    function viewNotes(){
+         setClickedViewNote(true)
+      }
+
+    function cancelviewNote(){
+        setClickedViewNote(false)
+     }
+
+    function cancelChange(){
+        setClicked(false)
+    }
+    
     return(
         <div>
-            <b><i>Welcome&nbsp; "{name}"</i></b>
+            <b><i>Welcome {name}</i></b>
             <br/>
             <br/>
             {!clicked && <button onClick={addNotes}>Add notes</button>} 
+            {!clicked && <button onClick={viewNotes}>View Saved Notes</button>}
+            {clickedViewNote && <div>{notes.map((notes)=><li>{notes}</li>)}</div>}
+            {clickedViewNote && <div><button onClick={cancelviewNote}>Close</button></div>}
             {clicked &&<div><div className="input-group">
             <div className="input-group-prepend">
                 <span className="input-group-text" id="basic-addon">
                 <FontAwesomeIcon icon={faEvernote} />
                 </span>
             </div>
-            <textarea value={textarea} onChange={(e) => setTextarea(e.target.value)} className="form-control" rows="5"></textarea>
+            <textarea value={textarea} onChange={(e) => setTextarea(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
             </div> 
-                <br/><button onClick={handleChange}>Submit</button></div>} 
+                <br/><button onClick={handleChange}>Submit</button>
+                <button onClick={cancelChange}>Cancel</button></div>} 
             </div>
-    
     );
 }
 export default Welcome;
