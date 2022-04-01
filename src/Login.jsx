@@ -3,14 +3,17 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { useNavigate } from "react-router-dom";
 import AuthenticationService from "./AuthenticationService";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login(){
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [usersData, setUsersData] = useState([]);
   const navigate = useNavigate();
-
   
+  toast.configure()
+
   useEffect(() => {
         db.collection("usersData").onSnapshot((snapshot) => {
           setUsersData(
@@ -20,6 +23,13 @@ function Login(){
           );
         });
    }, []);
+  
+   const notify1 = ()=>{
+    toast.error('Please enter valid credentials', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+  } 
+  const notify2 = ()=>{
+    toast.error('Sorry we didnt find your account, Please sign up', {position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+  } 
 
   function authenticate(){
      db.collection("usersData")
@@ -35,7 +45,7 @@ function Login(){
                    sendSubmit();
                 }
                 else{
-                  alert("Please enter valid credentials")
+                  notify1()
                 }
             }
             else{
@@ -43,7 +53,7 @@ function Login(){
             }
             if(count===c)
             {
-              alert("Sorry we didn't find your account, Please sign up")
+              notify2()
             }        
         });
       }))  
