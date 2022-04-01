@@ -85,8 +85,8 @@ function Welcome(){
             <b><i>Welcome {name}</i></b>
             <br/>
             <br/>
-            {!clicked && <button onClick={addNotes}>Add notes</button>} 
-            {!clicked && <button onClick={viewNotes}>View Saved Notes</button>}
+            {!clicked && !clickedViewNote && <button onClick={addNotes}>Add notes</button>} 
+            {!clicked && !clickedViewNote && <button onClick={viewNotes}>View Saved Notes</button>}
             {clickedViewNote && <div>{notes.map((notes)=><li>{notes}</li>)}</div>}
             {clickedViewNote && <div><button onClick={cancelviewNote}>Close</button></div>}
             {clicked &&<div><div className="input-group">
