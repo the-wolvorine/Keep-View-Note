@@ -33,7 +33,7 @@ function Header() {
                         </li>}
                         {isUserLoggedIn && <li class="custom-li"><a class="nav-link text-dark">
                         <span class="border border-dark rounded h-25 d-inline-block w-70 p-2">
-                        <Link class="nav-link active text-dark" to="/logout" onClick={AuthenticationService.logout}>Logout</Link>
+                        <Link class="nav-link active text-dark" to="/logout">Logout</Link>
                         </span>
                         </a>
                         </li>}
