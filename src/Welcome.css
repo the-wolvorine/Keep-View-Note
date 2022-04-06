@@ -1,0 +1,11 @@
+.container {
+    padding: 55px;
+} 
+.content, .btn {
+    margin: 10px;
+}
+
+.btn {
+    padding: 10px;
+    min-width: 150px;
+}

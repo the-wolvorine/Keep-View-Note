@@ -1,11 +1,11 @@
 import db from "./config";
 import React, { useState, useEffect } from "react";
 import firebase from 'firebase';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEvernote} from '@fortawesome/free-brands-svg-icons';
+import 'bootstrap/dist/css/bootstrap.css';
 import "./App.css";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './Welcome.css';
 
 function Welcome(){
     let email = sessionStorage.getItem('authenticatedUser');
@@ -138,43 +138,51 @@ function Welcome(){
     }
     
     return(
-        <div>
-            <b><i>Welcome {name}</i></b>
+        <div class="container bootstrap snippets bootdeys">
+          <div class="row">
+              <div class="content-card">
+                  <div class="card-big-shadow">
+                      <div class="card" data-background="color" data-color="blue" data-radius="none">
+                          <div class="content">
+                              <h6 class="category">Welcome {name}</h6>
+                              {!clicked && !clickedViewNote && 
+                                <div>
+                                  <p class="description">Start Creating your notes...</p>
+                                  <button class="btn btn-outline-dark" onClick={addNotes}>Add New Notes</button>
+                                </div>}
+                              {!clicked && !clickedViewNote && <button class="btn btn-outline-dark" onClick={viewNotes}>View Saved Notes</button>}
+                              {clicked &&
+                                <div className="input-group">
+                                  <div class="input-group-pretend">
+                                    <textarea value={textarea} onChange={(e) => setTextarea(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                                    <button class="btn btn-outline-dark" onClick={handleChange}>Submit</button>
+                                    <button class="btn btn-dark" onClick={cancelChange}>Cancel</button>
+                                  </div>
+                                </div>
+                              } 
+                          </div>
+                      </div>
+                  </div>
+              </div>
             <br/>
             <br/>
-            {!clicked && !clickedViewNote && <button onClick={addNotes}>Add notes</button>} 
-            {!clicked && !clickedViewNote && <button onClick={viewNotes}>View Saved Notes</button>}
             {clickedEditNote &&<div><b>Update Your Note Here</b><div className="input-group">
-            <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon">
-                <FontAwesomeIcon icon={faEvernote} />
-                </span>
-            </div>
             <textarea value={textarea1} onChange={(e) => setTextarea1(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
             </div> 
-                <br/><button onClick={handleChangeEdit}>Submit</button>&nbsp;
-                <button onClick={cancelChangeEdit}>Cancel</button></div>} 
+                <br/><button class="btn btn-outline-dark" onClick={handleChangeEdit}>Submit</button>&nbsp;
+                <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>} 
             {clickedViewNote && 
             <div>
                 <table class="table table-bordered table-hover">
                 <thead><b><i>NOTES</i></b></thead>
                 <tbody>{notes.map((notes)=>
-                <tr><li>{notes}<td><button onClick={() => {editNote(notes);setTextarea1(notes)}}>Update</button>&nbsp;<button onClick={() => delNote(notes)}>Delete</button></td>
+                <tr><li>{notes}<td><button class="btn btn-outline-dark" onClick={() => {editNote(notes);setTextarea1(notes)}}>Update</button>&nbsp;<button class="btn btn-dark" onClick={() => delNote(notes)}>Delete</button></td>
                 </li></tr>)
                 }</tbody></table>
             </div>}
-            {clickedViewNote && <div><button onClick={cancelviewNote}>Close</button></div>}
-            {clicked &&<div><div className="input-group">
-            <div className="input-group-prepend">
-                <span className="input-group-text" id="basic-addon">
-                <FontAwesomeIcon icon={faEvernote} />
-                </span>
+            {clickedViewNote && <div><button class="btn btn-dark" onClick={cancelviewNote}>Close</button></div>}
             </div>
-            <textarea value={textarea} onChange={(e) => setTextarea(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
-            </div> 
-                <br/><button onClick={handleChange}>Submit</button>
-                <button onClick={cancelChange}>Cancel</button></div>} 
-            </div>
+        </div>
     );
 }
 export default Welcome;
