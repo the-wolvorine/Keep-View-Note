@@ -6,8 +6,40 @@ import "./App.css";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Welcome.css';
+import { useNavigate } from "react-router-dom";
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';  
+import { ContentState, convertFromRaw, convertToRaw, EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import { convertToHTML ,convertFromHTML } from 'draft-convert';
+import DOMPurify from 'dompurify';
+
 
 function Welcome(){
+    const createMarkup = (html) => {
+        return  {
+          __html: DOMPurify.sanitize(html)
+        }
+      }
+      const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+          const wrapperStyle = {
+              border: '1px solid #969696',
+          }
+          const editorStyle = {
+              height:'25rem',
+              padding:'1rem'
+          }
+      const  [convertedContent, setConvertedContent] = useState(null);
+      const handleEditorChange = (state) => {
+        setEditorState(state);
+        convertContentToHTML();
+      }
+      const convertContentToHTML = () => {
+        let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+        setConvertedContent(currentContentAsHTML);
+        console.log("length is "+currentContentAsHTML.length)
+      }
+
+  const navigate = useNavigate();
     let email = sessionStorage.getItem('authenticatedUser');
     const [name, setName] = useState("");
     const [textarea, setTextarea] = useState("");
@@ -123,12 +155,11 @@ function Welcome(){
     }
 
     function handleChange(){
-      if(textarea.length>0)
-      {
-        db.collection("usersData").doc(id).set({
-          "notes": firebase.firestore.FieldValue.arrayUnion(textarea)
-        },
-        {merge:true})
+        if(convertedContent.length>7){
+            db.collection("usersData").doc(id).set({
+              "notes": firebase.firestore.FieldValue.arrayUnion(convertedContent)
+            },
+            {merge:true})
         notify()
         setClicked(false)
         db.collection("usersData").doc(id).get().then((function(doc){
@@ -142,19 +173,19 @@ function Welcome(){
 
       function handleChangeEdit(){
         db.collection("usersData").doc(id).set({
-            "notes": firebase.firestore.FieldValue.arrayRemove(editnote)
-          },
-          {merge:true})
-        db.collection("usersData").doc(id).set({
-          "notes": firebase.firestore.FieldValue.arrayUnion(textarea1)
+          "notes": firebase.firestore.FieldValue.arrayRemove(editnote)
         },
         {merge:true})
-        setClickedEditNote(false)
-        db.collection("usersData").doc(id).get().then((function(doc){
-        setNotes(doc.data().notes)
-        })) 
-        toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
-        setTextarea1("")
+      db.collection("usersData").doc(id).set({
+        "notes": firebase.firestore.FieldValue.arrayUnion(textarea1)
+      },
+      {merge:true})
+      setClickedEditNote(false)
+      db.collection("usersData").doc(id).get().then((function(doc){
+      setNotes(doc.data().notes)
+      })) 
+      toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+      setTextarea1("")
       }
 
       function handleChangeEditLocked(){
@@ -201,7 +232,7 @@ function Welcome(){
   }
 
     function editNote(note){
-        setEditNote(note)
+        setEditNote(convertFromHTML(note))
         setClickedEditNote(true)
     }
 
@@ -292,7 +323,31 @@ function Welcome(){
                               {clicked &&
                                 <div className="input-group">
                                   <div class="input-group-pretend">
-                                    <textarea value={textarea} onChange={(e) => setTextarea(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+                                  <Editor
+                                    initialEditorState={editorState}
+                                    wrapperClassName="wrapper-class"
+                                    wrapperStyle={wrapperStyle}
+                                    editorStyle={editorStyle}
+                                    toolbarClassName="toolbar-class"
+                                    editorClassName="demo-editor"
+                                    onEditorStateChange={handleEditorChange}
+                                    toolbar={{
+                                      options: ['inline', 'blockType', 'textAlign',
+                                                'history','emoji'],
+                                      inline: {
+                                        options: ['bold','italic','underline','strikethrough'],
+                                        bold: { className: 'demo-option-custom' },
+                                        italic: { className: 'demo-option-custom' },
+                                        underline: { className: 'demo-option-custom' },
+                                        strikethrough: {className: 'demo-option-custom' },
+                                        monospace: { className: 'demo-option-custom' },
+                                        superscript: {className: 'demo-option-custom'},
+                                        subscript: { className: 'demo-option-custom' }
+                                      },
+                                      blockType: {className: 'demo-option-custom-wide',
+                                      dropdownClassName: 'demo-dropdown-custom'},
+                                    }}
+                                  />
                                     <button class="btn btn-outline-dark" onClick={handleChange}>Submit</button>
                                     <button class="btn btn-dark" onClick={cancelChange}>Cancel</button>
                                   </div>
@@ -305,23 +360,48 @@ function Welcome(){
             <br/>
             <br/>
             {clickedEditNote &&<div><b>Update Your Note Here</b><div className="input-group">
-            <textarea value={textarea1} onChange={(e) => setTextarea1(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+              <Editor
+                initialEditorState={editorState}
+                wrapperClassName="wrapper-class"
+                wrapperStyle={wrapperStyle}
+                editorStyle={editorStyle}
+                toolbarClassName="toolbar-class"
+                editorClassName="demo-editor"
+                onEditorStateChange={handleEditorChange}
+                toolbar={{
+                  options: ['inline', 'blockType', 'textAlign',
+                            'history','emoji'],
+                  inline: {
+                    options: ['bold','italic',  'underline'],
+                    bold: { className: 'demo-option-custom' },
+                    italic: { className: 'demo-option-custom' },
+                    underline: { className: 'demo-option-custom' },
+                    strikethrough: {className: 'demo-option-custom' },
+                    monospace: { className: 'demo-option-custom' },
+                    superscript: {className: 'demo-option-custom'},
+                    subscript: { className: 'demo-option-custom' }
+                  },
+                  blockType: {className: 'demo-option-custom-wide',
+                  dropdownClassName: 'demo-dropdown-custom'},
+                }}
+              />
+            {/* <textarea value={textarea1} onChange={(e) => setTextarea1(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea> */}
             </div> 
                 <br/><button class="btn btn-outline-dark" onClick={handleChangeEdit}>Submit</button>&nbsp;
-                <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>} 
+                <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>}  
             {clickedViewNote && 
             <div>
                 <table class="table table-bordered table-hover">
                 <thead><b><i>NOTES</i></b></thead>
                 <tbody>{notes.map((notes)=>
-                <tr><li>{notes}<td>
+                <tr><li><div className="preview" dangerouslySetInnerHTML={createMarkup(notes)}></div><td>
                   <button class="btn btn-outline-dark" onClick={() => {editNote(notes);setTextarea1(notes)}}>Update</button>&nbsp;
                   <button class="btn btn-outline-dark" onClick={() => lockNotes(notes)}>Lock</button>&nbsp;
                   <button class="btn btn-dark" onClick={() => delNote(notes)}>Delete</button></td>
                 </li></tr>)
                 }</tbody></table>
             </div>}
-  {/* Encrypted Notes start*/}
+            {/* Encrypted Notes start*/}
             {clickedEditNoteLocked &&<div><b>Update Your Note Here</b><div className="input-group">
             <textarea value={textarea2} onChange={(e) => setTextarea2(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
             </div> 
@@ -337,7 +417,7 @@ function Welcome(){
                     <table class="table table-bordered table-hover">
                     <thead><b><i>ENCRYPTED NOTES &nbsp;<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="20"/></i></b></thead>
                     <tbody>{lockednotes.map((notes)=>
-                    <tr><li>{notes}<td>
+                    <tr><li><div className="preview" dangerouslySetInnerHTML={createMarkup(notes)}/><td>
                       <button class="btn btn-outline-dark" onClick={() => {editNoteLocked(notes);setTextarea2(notes)}}>Update</button>&nbsp;
                       <button class="btn btn-outline-dark" onClick={() => unlockNotesRemove(notes)}>Unlock</button>&nbsp;
                       <button class="btn btn-dark" onClick={() => delNoteLocked(notes)}>Delete</button></td>
