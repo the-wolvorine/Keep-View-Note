@@ -46,11 +46,5 @@
   "description": "Start creating notes and save the information to view it later ### Group Name: Quad-Squad",
   "main": "index.js",
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "dompurify": "^2.3.6",
-    "draft-convert": "^2.1.12",
-    "draft-js": "^0.11.7",
-    "react-draft-wysiwyg": "^1.14.7"
-  }
+  "license": "ISC"
 }
