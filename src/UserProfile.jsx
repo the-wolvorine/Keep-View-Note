@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import "./UserProfile.css";
 
 function UserProfile(){
     let email = sessionStorage.getItem('authenticatedUser');
@@ -150,11 +151,17 @@ function UserProfile(){
     function changeName()
     {
         setClickedName(true);
+        setTimeout(function(){
+          setClickedName(false);
+      },10000)
 
     }
     function changeMobile()
     {
         setClickedMobile(true);
+        setTimeout(function(){
+          setClickedMobile(false);
+      },10000)
 
     }
     function changeNameSubmit(){
@@ -237,47 +244,73 @@ function UserProfile(){
 }
 
     return(
-        <div>
-            <h2>User Profile</h2>
-            <table class="table table-bordered table-hover">
-                    <tbody>
-                    <tr>
-                    <th scope="row">Name</th>    
-                    {!clickedName && <td>{name}&nbsp;&nbsp;<button onClick={changeName}>Edit</button></td>}
-                    {clickedName && <td><input type="text" value={userName} onChange={(e) => setUserName(e.target.value)}></input>
+      
+<div>
+<section class="vh-100" style={{backgroundColor : "#f4f5f7"}}>
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col mb-lg-0">
+        <div class="card mb-3" style={{borderRadius: '15px' ,margin: '.5rem'}}>
+          <div class="row g-0">
+            <div class="col-md-3 gradient-custom text-center text-white" style={{borderRadius: '.5rem'}}>
+              <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                alt="Avatar"
+                class="img-fluid my-5"
+                // style={{width: '80px'}}
+              />
+               <i class="far fa-edit mb-5"></i>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body p-4">
+                <h4>Personal Information</h4>
+                  <hr class="mt-0 mb-4"/>
+                  {/* <div class="row pt-1"> */}
+                  <div class="col-md-auto">
+                    <h6>Name</h6>
+                    {!clickedName && <p class="text-muted" onClick={changeName}>{name}&nbsp;&nbsp;</p>}
+                    {clickedName && <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { changeNameSubmit();}}}></input>}
                     {Object.keys(nameErr).map((key)=>{
                     return <div style={{color : "red"}}>{nameErr[key]}</div>
                      })}
-                    &nbsp;&nbsp;<button onClick={() => {changeNameSubmit()}}>submit</button>
-                    &nbsp;&nbsp;<button onClick={cancelEditName}>cancel</button></td> }
-                    </tr>
-                    <tr>
-                    <th scope="row">Mobile</th> 
-                    {!clickedMobile && <td>{mobile}&nbsp;&nbsp;<button onClick={changeMobile}>Edit</button></td> }
-                    {clickedMobile && <td><input type="text" value={userMobile} onChange={(e) => setUserMobile(e.target.value)}></input>
+                    <h6>Phone</h6>
+                    {!clickedMobile && <p class="text-muted" onClick={changeMobile} >{mobile}&nbsp;&nbsp;</p>}
+                    {clickedMobile && <input type="text" value={userMobile} onChange={(e) => setUserMobile(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { changeMobileSubmit();}}}></input>}
                     {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
                      })}
-                    &nbsp;&nbsp; <button onClick={() => {changeMobileSubmit()}}>submit</button>
-                    &nbsp;&nbsp; <button onClick={cancelEditMobile}>cancel</button></td>}
-                    </tr>
-                    <tr>
-                    <th scope="row">Email</th>  
-                    <td>{email}</td>
-                    </tr>
-                </tbody>
-            </table>
-            {!clickedPassword && <button onClick={changePassword}>Change password</button>}
-            {clickedPassword && <div><div>Enter Current Password:<input type="password" onChange={(e) => setCurrentPassword(e.target.value)}></input></div><br/>
-            <div>Enter new password:<input type="password" onChange={(e) => setUserPassword(e.target.value)}></input></div>
-            {Object.keys(passwordErr).map((key)=>{
+                    <h6>Email</h6>
+                    <p class="text-muted">{email}</p>
+                    {!clickedPassword && <a onClick={changePassword} class="fw-bold text-body" href="#"><u>Change Password</u></a>}
+                    {clickedPassword && 
+                      <div>
+                        <h6>Enter Current Password:</h6>
+                        <input type="password" onChange={(e) => setCurrentPassword(e.target.value)}></input>
+                        <h6 class="spacing-style">Enter new password:</h6>
+                        <input type="password"  onChange={(e) => setUserPassword(e.target.value)}></input>
+                        <br></br>
+                        {Object.keys(passwordErr).map((key)=>{
                     return <div style={{color : "red"}}>{passwordErr[key]}</div>
                      })}
-            <button onClick={changePasswordSubmit}>Submit</button>&nbsp;
-            <button onClick={cancelEditPassword}>cancel</button>
-            </div>}
-        </div>
-    
+                        <button onClick={changePasswordSubmit} class="btn btn-dark" style={{padding: '5px', minWidth: '90px', margin: 'revert'}}>Submit</button>
+                        <button onClick={cancelEditPassword} class="btn btn-dark" style={{padding: '5px', minWidth: '90px'}}>cancel</button>
+                      </div>
+                    }
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+</section>
+</div>
+
     );
-}
+    }
 export default UserProfile;
+
+
+
