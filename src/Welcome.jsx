@@ -9,15 +9,15 @@ import './Welcome.css';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';  
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { convertToHTML ,convertFromHTML } from 'draft-convert';
+import { convertToHTML} from 'draft-convert';
 import DOMPurify from 'dompurify';
+import { useNavigate } from "react-router-dom";
 
 
 function Welcome(){
     var CryptoJS = require("crypto-js");
     let email = sessionStorage.getItem('authenticatedUser');
     const [name, setName] = useState("");
-    const [clicked,setClicked] = useState(false);
     const [notes, setNotes] = useState({});
     const [lockednotes, setLockedNotes] = useState({});
     const [id,setId] = useState("")
@@ -30,28 +30,16 @@ function Welcome(){
     const [userPassword, setUserPassword] = useState("");
     const [originalPassword, setOriginalPassword] = useState("");
     const [unlockSuccess , setUnlockSuccess] = useState(false);
-    const [convertedContent, setConvertedContent] = useState("");
     const [convertedContent1, setConvertedContent1] = useState("");
-    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const [editorState1, setEditorState1] = useState(() => EditorState.createEmpty());
     const [empty, setEmpty] = useState(false);
     const [emptylocked, setEmptyLocked] = useState(false);
+    const navigate = useNavigate();
 
     toast.configure()
     const notify = ()=>{
         toast.success('Note saved Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
       } 
-
-    useEffect(()=>{
-        if(clicked===true)
-        {
-            setClicked(true);
-        }
-        if(clicked===false)
-        {
-            setClicked(false);
-        }
-      },[clicked])
 
       useEffect(()=>{
         if(empty===true)
@@ -155,25 +143,6 @@ function Welcome(){
         updateEmpty()
         }))
     }
-
-    function handleChange(){
-      var ciphertext = CryptoJS.AES.encrypt(convertedContent, email).toString();
-        if(convertedContent.length>7){
-            db.collection("usersData").doc(id).set({
-              "notes": firebase.firestore.FieldValue.arrayUnion(ciphertext)
-            },
-            {merge:true})
-        notify()
-        setClicked(false)
-        db.collection("usersData").doc(id).get().then((function(doc){
-        setNotes(doc.data().notes)
-        updateEmpty()
-        })) }
-        else{
-          toast.error('Please write something to save', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
-        }
-      }
-
       function handleChangeEdit(){
         var ciphertext = CryptoJS.AES.encrypt(convertedContent1, email).toString();
         if(convertedContent1.length>7){
@@ -221,7 +190,7 @@ function Welcome(){
       }
         
     function addNotes(){
-        setClicked(true);
+        navigate("/addnotes")
       }
       
     function viewNotes(){
@@ -233,10 +202,6 @@ function Welcome(){
         setUnlockNotes(false)
         setUnlockSuccess(false)
      }
-
-    function cancelChange(){
-        setClicked(false)
-    }
 
     function cancelChangeEdit(){
         setClickedEditNote(false)
@@ -353,19 +318,9 @@ function Welcome(){
             padding:'1rem'
     }
 
-    const handleEditorChange = (state) => {
-      setEditorState(state);
-      convertContentToHTML();
-    }
-
     const handleEditorChange1 = (state) => {
       setEditorState1(state);
       convertContentToHTML1();
-    }
-
-    const convertContentToHTML = () => {
-      let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-      setConvertedContent(currentContentAsHTML);
     }
 
     const convertContentToHTML1 = () => {
@@ -388,45 +343,12 @@ function Welcome(){
                       <div class="card" data-background="color" data-color="blue" data-radius="none">
                           <div class="content">
                               <h6 class="category">Welcome {name}</h6>
-                              {!clicked && !clickedViewNote && 
+                              {!clickedViewNote && 
                                 <div>
                                   <p class="description">Start Creating your notes...</p>
                                   <button class="btn btn-outline-dark" onClick={addNotes}>Add New Notes</button>
                                 </div>}
-                              {!clicked && !clickedViewNote && <button class="btn btn-outline-dark" onClick={viewNotes}>View Saved Notes</button>}
-                              {clicked &&
-                                <div className="input-group">
-                                  <div class="input-group-pretend">
-                                  <Editor
-                                    initialEditorState={editorState}
-                                    wrapperClassName="wrapper-class"
-                                    wrapperStyle={wrapperStyle}
-                                    editorStyle={editorStyle}
-                                    toolbarClassName="toolbar-class"
-                                    editorClassName="demo-editor"
-                                    onEditorStateChange={handleEditorChange}
-                                    toolbar={{
-                                      options: ['inline', 'blockType', 'textAlign',
-                                                'history','emoji'],
-                                      inline: {
-                                        options: ['bold','italic','underline','strikethrough'],
-                                        bold: { className: 'demo-option-custom' },
-                                        italic: { className: 'demo-option-custom' },
-                                        underline: { className: 'demo-option-custom' },
-                                        strikethrough: {className: 'demo-option-custom' },
-                                        monospace: { className: 'demo-option-custom' },
-                                        superscript: {className: 'demo-option-custom'},
-                                        subscript: { className: 'demo-option-custom' }
-                                      },
-                                      blockType: {className: 'demo-option-custom-wide',
-                                      dropdownClassName: 'demo-dropdown-custom'},
-                                    }}
-                                  />
-                                    <button class="btn btn-outline-dark" onClick={handleChange}>Submit</button>
-                                    <button class="btn btn-dark" onClick={cancelChange}>Cancel</button>
-                                  </div>
-                                </div>
-                              } 
+                              { !clickedViewNote && <button class="btn btn-outline-dark" onClick={viewNotes}>View Saved Notes</button>}
                           </div>
                       </div>
                   </div>
