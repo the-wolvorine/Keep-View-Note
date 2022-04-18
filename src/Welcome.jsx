@@ -157,7 +157,7 @@ function Welcome(){
     }
 
     function handleChange(){
-      var ciphertext = CryptoJS.AES.encrypt(convertedContent, originalPassword).toString();
+      var ciphertext = CryptoJS.AES.encrypt(convertedContent, email).toString();
         if(convertedContent.length>7){
             db.collection("usersData").doc(id).set({
               "notes": firebase.firestore.FieldValue.arrayUnion(ciphertext)
@@ -175,7 +175,7 @@ function Welcome(){
       }
 
       function handleChangeEdit(){
-        var ciphertext = CryptoJS.AES.encrypt(convertedContent1, originalPassword).toString();
+        var ciphertext = CryptoJS.AES.encrypt(convertedContent1, email).toString();
         if(convertedContent1.length>7){
         db.collection("usersData").doc(id).set({
             "notes": firebase.firestore.FieldValue.arrayRemove(editnote)
@@ -198,7 +198,7 @@ function Welcome(){
       }
 
       function handleChangeEditLocked(){
-        var ciphertext = CryptoJS.AES.encrypt(convertedContent1, originalPassword).toString();
+        var ciphertext = CryptoJS.AES.encrypt(convertedContent1, email).toString();
         if(convertedContent1.length>7){
         db.collection("usersData").doc(id).set({
             "noteslocked": firebase.firestore.FieldValue.arrayRemove(editnotelocked)
@@ -339,7 +339,7 @@ function Welcome(){
     }
 
     const createMarkup = (html) => {
-      var bytes = CryptoJS.AES.decrypt(html, originalPassword);
+      var bytes = CryptoJS.AES.decrypt(html, email);
       var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
       return  {
         __html: DOMPurify.sanitize(decryptedData)
@@ -371,9 +371,9 @@ function Welcome(){
     const convertContentToHTML1 = () => {
       let currentContentAsHTML = convertToHTML(editorState1.getCurrentContent());
       setConvertedContent1(currentContentAsHTML);
-      var ciphertext = CryptoJS.AES.encrypt(convertedContent1, originalPassword).toString();
+      var ciphertext = CryptoJS.AES.encrypt(convertedContent1, email).toString();
       console.log(ciphertext)
-      var bytes = CryptoJS.AES.decrypt(ciphertext, originalPassword);
+      var bytes = CryptoJS.AES.decrypt(ciphertext, email);
       var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
       console.log("decrypted data"+decryptedData)
       console.log("length is "+currentContentAsHTML.length)
