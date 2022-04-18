@@ -6,45 +6,17 @@ import "./App.css";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Welcome.css';
-import { useNavigate } from "react-router-dom";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';  
-import { ContentState, convertFromRaw, convertToRaw, EditorState } from 'draft-js';
+import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { convertToHTML ,convertFromHTML } from 'draft-convert';
 import DOMPurify from 'dompurify';
 
 
 function Welcome(){
-    const createMarkup = (html) => {
-        return  {
-          __html: DOMPurify.sanitize(html)
-        }
-      }
-      const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-          const wrapperStyle = {
-              border: '1px solid #969696',
-          }
-          const editorStyle = {
-              height:'25rem',
-              padding:'1rem'
-          }
-      const  [convertedContent, setConvertedContent] = useState(null);
-      const handleEditorChange = (state) => {
-        setEditorState(state);
-        convertContentToHTML();
-      }
-      const convertContentToHTML = () => {
-        let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-        setConvertedContent(currentContentAsHTML);
-        console.log("length is "+currentContentAsHTML.length)
-      }
-
-  const navigate = useNavigate();
+    var CryptoJS = require("crypto-js");
     let email = sessionStorage.getItem('authenticatedUser');
     const [name, setName] = useState("");
-    const [textarea, setTextarea] = useState("");
-    const [textarea1, setTextarea1] = useState("");
-    const [textarea2, setTextarea2] = useState("");
     const [clicked,setClicked] = useState(false);
     const [notes, setNotes] = useState({});
     const [lockednotes, setLockedNotes] = useState({});
@@ -58,6 +30,12 @@ function Welcome(){
     const [userPassword, setUserPassword] = useState("");
     const [originalPassword, setOriginalPassword] = useState("");
     const [unlockSuccess , setUnlockSuccess] = useState(false);
+    const [convertedContent, setConvertedContent] = useState("");
+    const [convertedContent1, setConvertedContent1] = useState("");
+    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+    const [editorState1, setEditorState1] = useState(() => EditorState.createEmpty());
+    const [empty, setEmpty] = useState(false);
+    const [emptylocked, setEmptyLocked] = useState(false);
 
     toast.configure()
     const notify = ()=>{
@@ -74,6 +52,28 @@ function Welcome(){
             setClicked(false);
         }
       },[clicked])
+
+      useEffect(()=>{
+        if(empty===true)
+        {
+            setEmpty(true);
+        }
+        if(empty===false)
+        {
+            setEmpty(false);
+        }
+      },[empty])
+
+      useEffect(()=>{
+        if(emptylocked===true)
+        {
+            setEmptyLocked(true);
+        }
+        if(emptylocked===false)
+        {
+            setEmptyLocked(false);
+        }
+      },[emptylocked])
 
       useEffect(()=>{
         if(unlockSuccess===true)
@@ -142,6 +142,7 @@ function Welcome(){
                   setId(element.id)
                   setLockedNotes(element.data().noteslocked)
                   setOriginalPassword(element.data().password)
+                  updateEmpty()
               }    
           });
         })) 
@@ -151,58 +152,72 @@ function Welcome(){
       db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked)
         setNotes(doc.data().notes)
+        updateEmpty()
         }))
     }
 
     function handleChange(){
+      var ciphertext = CryptoJS.AES.encrypt(convertedContent, originalPassword).toString();
         if(convertedContent.length>7){
             db.collection("usersData").doc(id).set({
-              "notes": firebase.firestore.FieldValue.arrayUnion(convertedContent)
+              "notes": firebase.firestore.FieldValue.arrayUnion(ciphertext)
             },
             {merge:true})
         notify()
         setClicked(false)
         db.collection("usersData").doc(id).get().then((function(doc){
         setNotes(doc.data().notes)
+        updateEmpty()
         })) }
         else{
           toast.error('Please write something to save', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
         }
-        setTextarea("")
       }
 
       function handleChangeEdit(){
+        var ciphertext = CryptoJS.AES.encrypt(convertedContent1, originalPassword).toString();
+        if(convertedContent1.length>7){
         db.collection("usersData").doc(id).set({
-          "notes": firebase.firestore.FieldValue.arrayRemove(editnote)
-        },
-        {merge:true})
-      db.collection("usersData").doc(id).set({
-        "notes": firebase.firestore.FieldValue.arrayUnion(textarea1)
-      },
-      {merge:true})
-      setClickedEditNote(false)
-      db.collection("usersData").doc(id).get().then((function(doc){
-      setNotes(doc.data().notes)
-      })) 
-      toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
-      setTextarea1("")
+            "notes": firebase.firestore.FieldValue.arrayRemove(editnote)
+          },
+          {merge:true})
+          db.collection("usersData").doc(id).set({
+            "notes": firebase.firestore.FieldValue.arrayUnion(ciphertext)
+          },
+          {merge:true})
+        setClickedEditNote(false)
+        db.collection("usersData").doc(id).get().then((function(doc){
+        setNotes(doc.data().notes)
+        updateEmpty()
+        })) 
+        toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+      }
+        else{
+          toast.error('Please write something to update', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+        }
       }
 
       function handleChangeEditLocked(){
+        var ciphertext = CryptoJS.AES.encrypt(convertedContent1, originalPassword).toString();
+        if(convertedContent1.length>7){
         db.collection("usersData").doc(id).set({
             "noteslocked": firebase.firestore.FieldValue.arrayRemove(editnotelocked)
           },
           {merge:true})
         db.collection("usersData").doc(id).set({
-          "noteslocked": firebase.firestore.FieldValue.arrayUnion(textarea2)
+          "noteslocked": firebase.firestore.FieldValue.arrayUnion(ciphertext)
         },
         {merge:true})
         setClickedEditNoteLocked(false)
         db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked)
+        updateEmpty()
         })) 
         toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
-        setTextarea2("")
+      }
+        else{
+          toast.error('Please write something to update', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+        }
       }
         
     function addNotes(){
@@ -232,7 +247,7 @@ function Welcome(){
   }
 
     function editNote(note){
-        setEditNote(convertFromHTML(note))
+        setEditNote(note)
         setClickedEditNote(true)
     }
 
@@ -250,7 +265,23 @@ function Welcome(){
           db.collection("usersData").doc(id).get().then((function(doc){
             setNotes(doc.data().notes)
             setLockedNotes(doc.data().noteslocked)
+            updateEmpty()
             })) 
+    }
+
+    function updateEmpty(){
+      if(notes.length===0){
+        setEmpty(true)
+      }
+      if(notes.length>0){
+        setEmpty(false)
+      }
+      if(lockednotes.length===0){
+        setEmptyLocked(true)
+      }
+      if(lockednotes.length>0){
+        setEmptyLocked(false)
+      }
     }
 
     function delNoteLocked(note){
@@ -262,6 +293,7 @@ function Welcome(){
       db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked)
         setNotes(doc.data().notes)
+        updateEmpty()
         })) 
     }
 
@@ -305,6 +337,48 @@ function Welcome(){
       {merge:true})
        update();
     }
+
+    const createMarkup = (html) => {
+      var bytes = CryptoJS.AES.decrypt(html, originalPassword);
+      var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+      return  {
+        __html: DOMPurify.sanitize(decryptedData)
+      }
+    }
+    const wrapperStyle = {
+            border: '1px solid #969696',
+    }
+    const editorStyle = {
+            height:'25rem',
+            padding:'1rem'
+    }
+
+    const handleEditorChange = (state) => {
+      setEditorState(state);
+      convertContentToHTML();
+    }
+
+    const handleEditorChange1 = (state) => {
+      setEditorState1(state);
+      convertContentToHTML1();
+    }
+
+    const convertContentToHTML = () => {
+      let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+      setConvertedContent(currentContentAsHTML);
+    }
+
+    const convertContentToHTML1 = () => {
+      let currentContentAsHTML = convertToHTML(editorState1.getCurrentContent());
+      setConvertedContent1(currentContentAsHTML);
+      var ciphertext = CryptoJS.AES.encrypt(convertedContent1, originalPassword).toString();
+      console.log(ciphertext)
+      var bytes = CryptoJS.AES.decrypt(ciphertext, originalPassword);
+      var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+      console.log("decrypted data"+decryptedData)
+      console.log("length is "+currentContentAsHTML.length)
+    }
+
     
     return(
         <div class="container bootstrap snippets bootdeys">
@@ -360,32 +434,31 @@ function Welcome(){
             <br/>
             <br/>
             {clickedEditNote &&<div><b>Update Your Note Here</b><div className="input-group">
-              <Editor
-                initialEditorState={editorState}
-                wrapperClassName="wrapper-class"
-                wrapperStyle={wrapperStyle}
-                editorStyle={editorStyle}
-                toolbarClassName="toolbar-class"
-                editorClassName="demo-editor"
-                onEditorStateChange={handleEditorChange}
-                toolbar={{
-                  options: ['inline', 'blockType', 'textAlign',
-                            'history','emoji'],
-                  inline: {
-                    options: ['bold','italic',  'underline'],
-                    bold: { className: 'demo-option-custom' },
-                    italic: { className: 'demo-option-custom' },
-                    underline: { className: 'demo-option-custom' },
-                    strikethrough: {className: 'demo-option-custom' },
-                    monospace: { className: 'demo-option-custom' },
-                    superscript: {className: 'demo-option-custom'},
-                    subscript: { className: 'demo-option-custom' }
-                  },
-                  blockType: {className: 'demo-option-custom-wide',
-                  dropdownClassName: 'demo-dropdown-custom'},
-                }}
-              />
-            {/* <textarea value={textarea1} onChange={(e) => setTextarea1(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea> */}
+            <Editor
+                    initialEditorState={editorState1}
+                    wrapperClassName="wrapper-class"
+                    wrapperStyle={wrapperStyle}
+                    editorStyle={editorStyle}
+                    toolbarClassName="toolbar-class"
+                    editorClassName="demo-editor"                                                                               
+                    onEditorStateChange={handleEditorChange1}
+                    toolbar={{
+                        options: ['inline', 'blockType', 'textAlign', 
+                                  'history','emoji'],                                
+                        inline: {
+                          options: ['bold','italic',  'underline' , 'strikethrough'],
+                          bold: { className: 'demo-option-custom' },
+                          italic: { className: 'demo-option-custom' },
+                          underline: { className: 'demo-option-custom' },
+                          strikethrough: {className: 'demo-option-custom' },
+                          monospace: { className: 'demo-option-custom' },
+                          superscript: {className: 'demo-option-custom'},
+                          subscript: { className: 'demo-option-custom' }
+                        },
+                        blockType: {className: 'demo-option-custom-wide',
+                        dropdownClassName: 'demo-dropdown-custom'},
+                    }}
+                />
             </div> 
                 <br/><button class="btn btn-outline-dark" onClick={handleChangeEdit}>Submit</button>&nbsp;
                 <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>}  
@@ -394,20 +467,46 @@ function Welcome(){
                 <table class="table table-bordered table-hover">
                 <thead><b><i>NOTES</i></b></thead>
                 <tbody>{notes.map((notes)=>
-                <tr><li><div className="preview" dangerouslySetInnerHTML={createMarkup(notes)}></div><td>
-                  <button class="btn btn-outline-dark" onClick={() => {editNote(notes);setTextarea1(notes)}}>Update</button>&nbsp;
+                  <tr><li><div className="preview" dangerouslySetInnerHTML={createMarkup(notes)}></div><td>
+                  <button class="btn btn-outline-dark" onClick={() => {editNote(notes)}}>Update</button>&nbsp;
                   <button class="btn btn-outline-dark" onClick={() => lockNotes(notes)}>Lock</button>&nbsp;
                   <button class="btn btn-dark" onClick={() => delNote(notes)}>Delete</button></td>
                 </li></tr>)
-                }</tbody></table>
+                }
+                </tbody></table>
             </div>}
-            {/* Encrypted Notes start*/}
+            {clickedViewNote && empty && <div> <center>You haven't saved any Note yet.<br/> Please go ahead and add your new note today!!! </center></div>}
+            {/* Locked Notes start*/}
             {clickedEditNoteLocked &&<div><b>Update Your Note Here</b><div className="input-group">
-            <textarea value={textarea2} onChange={(e) => setTextarea2(e.target.value)} className="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+            <Editor
+                    initialEditorState={editorState1}
+                    wrapperClassName="wrapper-class"
+                    wrapperStyle={wrapperStyle}
+                    editorStyle={editorStyle}
+                    toolbarClassName="toolbar-class"
+                    editorClassName="demo-editor"                                                                               
+                    onEditorStateChange={handleEditorChange1}
+                    toolbar={{
+                        options: ['inline', 'blockType', 'textAlign', 
+                                  'history','emoji'],                                
+                        inline: {
+                          options: ['bold','italic',  'underline' , 'strikethrough'],
+                          bold: { className: 'demo-option-custom' },
+                          italic: { className: 'demo-option-custom' },
+                          underline: { className: 'demo-option-custom' },
+                          strikethrough: {className: 'demo-option-custom' },
+                          monospace: { className: 'demo-option-custom' },
+                          superscript: {className: 'demo-option-custom'},
+                          subscript: { className: 'demo-option-custom' }
+                        },
+                        blockType: {className: 'demo-option-custom-wide',
+                        dropdownClassName: 'demo-dropdown-custom'},
+                    }}
+                />
             </div> 
                 <br/><button class="btn btn-outline-dark" onClick={handleChangeEditLocked}>Submit</button>&nbsp;
                 <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button></div>} 
-                {clickedViewNote && !unlockSuccess && <b><button class="btn btn-outline-dark" onClick={unlockNotes}>ENCRYPTED NOTES <img src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="30"/></button></b>}
+                {clickedViewNote && !unlockSuccess  && <b><button class="btn btn-outline-dark" onClick={unlockNotes}>LOCKED <img src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="30"/></button></b>}
                 {clickedViewNote && unlocknotes && <div>
                   <div class="form-outline mb-4">
                   {!unlockSuccess && <div><br/><input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password"  value={userPassword} onChange={(e) => setUserPassword(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { unlockClicked();}}}/></div>}
@@ -415,21 +514,22 @@ function Welcome(){
                   {!unlockSuccess && <div class="d-flex justify-content-center"><button onClick={unlockClicked} className="btn btn-block btn-lg btn-dark">unlock</button> </div>}
                       {unlockSuccess && <div>
                     <table class="table table-bordered table-hover">
-                    <thead><b><i>ENCRYPTED NOTES &nbsp;<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="20"/></i></b></thead>
+                    <thead><b><i>UNLOCKED &nbsp;<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="20"/></i></b></thead>
                     <tbody>{lockednotes.map((notes)=>
                     <tr><li><div className="preview" dangerouslySetInnerHTML={createMarkup(notes)}/><td>
-                      <button class="btn btn-outline-dark" onClick={() => {editNoteLocked(notes);setTextarea2(notes)}}>Update</button>&nbsp;
+                      <button class="btn btn-outline-dark" onClick={() => {editNoteLocked(notes)}}>Update</button>&nbsp;
                       <button class="btn btn-outline-dark" onClick={() => unlockNotesRemove(notes)}>Unlock</button>&nbsp;
                       <button class="btn btn-dark" onClick={() => delNoteLocked(notes)}>Delete</button></td>
                     </li></tr>)
                     }</tbody></table>
                         </div>}
                 </div>}
+                {clickedViewNote && unlocknotes &&  unlockSuccess && empty && <div>You don't have any Hidden Notes</div>}
                 {clickedViewNote && unlocknotes &&  unlockSuccess && <div><button class="btn btn-dark" onClick={lockAgain}>Hide</button></div>}
             
             {clickedViewNote && <div><button class="btn btn-dark" onClick={cancelviewNote}>Close</button></div>}
             </div>
-            {/* Encrypted Notes end*/}
+            {/* Locked Notes end*/}
         </div>
     );
 }
