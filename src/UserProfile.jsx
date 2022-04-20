@@ -166,7 +166,6 @@ function UserProfile(){
     }
     function changeNameSubmit(){
         const isValid = nameValidation();
-        console.log(isValid)
         if(isValid){
         db.collection("usersData").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
