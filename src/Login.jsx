@@ -81,14 +81,18 @@ function Login(){
     db.collection("usersData")
       .get()
       .then((function(doc){
+        var count=0;
+        console.log(count)
         doc.forEach(element => {
           if(element.data().email===user.email)
           {
-            setGCount(1)
+            count=1;
+            AuthenticationService.registerSuccessfulLogin(user.email,user.googleId)
+            navigate("/welcome",{state:{email:user.email}})
           }
         }
-      )}));
-    if(gCount===0){
+      )
+    if(count===0){
       db.collection("usersData").add({
         name: user.name,
         email: user.email,
@@ -102,8 +106,9 @@ function Login(){
       AuthenticationService.registerSuccessfulLogin(user.email,user.googleId)
       navigate("/welcome",{state:{email:user.email}})
     }
-    else alert("registered already");
+    }));
   };
+  
   const sendSubmit = () => {
       AuthenticationService.registerSuccessfulLogin(userEmail,userPassword)
       navigate("/welcome",{state:{email:userEmail}});
