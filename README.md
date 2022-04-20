@@ -2,7 +2,7 @@
 Start creating notes and save the information to view it later
 ### Group Name: Quad-Squad
 
-This app was build using [Brief: Evernote Replacement](https://github.com/thegoldenmule/csci-5030/blob/main/notes/briefs/evernote.md#brief-evernote-replacement).
+This app was build using [Brief: Evernote Replacement](https://github.com/thegoldenmule/csci-5030/blob/develop/notes/briefs/evernote.md).
 
 Our [Trello Workspace](https://trello.com/b/NBrvrm1o)
 
