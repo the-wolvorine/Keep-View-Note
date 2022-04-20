@@ -17,8 +17,20 @@ function Login(){
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [userMobile, setUserMobile] = useState("");
+  const [gCount, setGCount] = useState(0);
   
   toast.configure()
+
+  useEffect(()=>{
+    if(gCount===0)
+    {
+        setGCount(0);
+    }
+    if(gCount===1)
+    {
+        setGCount(1);
+    }
+  },[gCount])
 
   useEffect(() => {
         db.collection("usersData").onSnapshot((snapshot) => {
@@ -43,7 +55,7 @@ function Login(){
       .then((function(doc){
         let c=doc.size;
         let count=0;
-        doc.forEach(element => { 
+        doc.forEach(element => {
             if(element.data().email===userEmail)
             {
                 if(element.data().password===userPassword)
@@ -60,33 +72,46 @@ function Login(){
             if(count===c)
             {
               notify2()
-            }        
+            }
         });
-      }))  
-   }
-   const onSuccess = (res) => {
+      }))
+  }
+  const onSuccess = (res) => {
     let user = res.profileObj;
-    db.collection("usersData").add({
-      name: user.name,
-      email: user.email,
-      mobile: "",
-      authentication: "google"
-    });
+    db.collection("usersData")
+      .get()
+      .then((function(doc){
+        doc.forEach(element => {
+          if(element.data().email===user.email)
+          {
+            setGCount(1)
+          }
+        }
+      )}));
+    if(gCount===0){
+      db.collection("usersData").add({
+        name: user.name,
+        email: user.email,
+        mobile: "",
+        authentication: "google"
+      });
   
-    setUserName("");
-    setUserEmail("");
-    setUserMobile("");
-    AuthenticationService.registerSuccessfulLogin(user.email,user.googleId)
+      setUserName("");
+      setUserEmail("");
+      setUserMobile("");
+      AuthenticationService.registerSuccessfulLogin(user.email,user.googleId)
       navigate("/welcome",{state:{email:user.email}})
+    }
+    else alert("registered already");
   };
   const sendSubmit = () => {
       AuthenticationService.registerSuccessfulLogin(userEmail,userPassword)
       navigate("/welcome",{state:{email:userEmail}});
       
   };
- const loginClicked= (e) => {
+  const loginClicked= (e) => {
     authenticate();
-  }
+  };
   return(
     <div class="mask d-flex align-items-center gradient-custom-3">
     <div class="container">
@@ -116,7 +141,6 @@ function Login(){
                       <button class="btn btn-block btn-lg btn-dark" onClick={renderProps.onClick} ><i class="fa fa-google"></i> Sign In With Google</button>
                     )}
                     onSuccess={onSuccess}
-                    cookiePolicy={'single_host_origin'}
                     style={{ marginTop: '100px' }}
                     isSignedIn={true}
                   />
