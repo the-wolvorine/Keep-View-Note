@@ -327,11 +327,8 @@ function Welcome(){
       let currentContentAsHTML = convertToHTML(editorState1.getCurrentContent());
       setConvertedContent1(currentContentAsHTML);
       var ciphertext = CryptoJS.AES.encrypt(convertedContent1, email).toString();
-      console.log(ciphertext)
       var bytes = CryptoJS.AES.decrypt(ciphertext, email);
       var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
-      console.log("decrypted data"+decryptedData)
-      console.log("length is "+currentContentAsHTML.length)
     }
 
     

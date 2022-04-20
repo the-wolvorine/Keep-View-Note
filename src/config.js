@@ -13,5 +13,5 @@ const firebaseConfig={
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-  
 export default db;
+export const clientId = "1091351237546-e0els3ec8cr9v27df0km330acdrfr353.apps.googleusercontent.com";
