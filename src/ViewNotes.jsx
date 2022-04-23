@@ -19,6 +19,7 @@ function ViewNotes(){
     let email = sessionStorage.getItem('authenticatedUser');
     const [name, setName] = useState("");
     const [notes, setNotes] = useState([]);
+    const [sharenote,setShareNote] = useState("")
     const [lockednotes, setLockedNotes] = useState({});
     const [id,setId] = useState("")
     const [clickedEditNote,setClickedEditNote] = useState(false);
@@ -33,6 +34,8 @@ function ViewNotes(){
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
     const [empty, setEmpty] = useState(false);
     const [emptylocked, setEmptyLocked] = useState(false);
+    const [shareClicked, setShareClicked] = useState(false);
+    const [shareEmail, setShareEmail] = useState("");
     const navigate = useNavigate();
 
     toast.configure()
@@ -58,6 +61,17 @@ function ViewNotes(){
             setEmptyLocked(false);
         }
       },[emptylocked])
+
+      useEffect(()=>{
+        if(shareClicked===true)
+        {
+            setShareClicked(true);
+        }
+        if(shareClicked===false)
+        {
+            setShareClicked(false);
+        }
+      },[shareClicked])
 
       useEffect(()=>{
         if(unlockSuccess===true)
@@ -325,57 +339,112 @@ function ViewNotes(){
       setConvertedContent(currentContentAsHTML);
     }
 
+    function share(note){
+      setShareClicked(true)
+      setShareNote(note)
+    }
+
+    function shareSubmit(e){
+      const notes= sharenote
+      db.collection("usersData")
+        .get()
+        .then((function(doc){
+          var bytes = CryptoJS.AES.decrypt(notes, email);
+          var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+          var count=0;
+          doc.forEach(element => { 
+              if(element.data().email===shareEmail)
+              {
+                count=1
+                var id=element.id;
+                db.collection("usersData").doc(id).set({
+                  "sharednotes": firebase.firestore.FieldValue.arrayUnion(decryptedData)
+                },
+                {merge:true})
+                setShareClicked(false)
+                toast.success('Shared Successfully to '+shareEmail, { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+                setShareEmail("")
+              }
+          });
+          if(count===0){
+            toast.error('We didnt find an account to share, please check email again', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+          }
+        }))
+    }
+
+    function cancelShare(){
+      setShareClicked(false)
+    }
+
     
     return(
         <div class="container bootstrap snippets bootdeys">
           <div class="row">
-          <div class="content-card">
-                  <div class="card-big-shadow">
-                      <div class="card" data-background="color" data-color="blue" data-radius="none">
-                          <div class="content">
-                              <h6 class="category">Welcome {name}</h6>
-
-                      </div>
+            <div class="content-card">
+              <div class="card-big-shadow">
+                <div class="card" data-background="color" data-color="blue" data-radius="none">
+                  <div class="content">
+                    <h6 class="category">Welcome {name}</h6>
                   </div>
+                </div>
               </div>
             </div>
             <br/>
             <br/>
             {clickedEditNote &&<div><b>Update Your Note Here</b><div className="input-group">
-            <Editor
-                    initialEditorState={editorState}
-                    wrapperClassName="wrapper-class"
-                    wrapperStyle={wrapperStyle}
-                    editorStyle={editorStyle}
-                    toolbarClassName="toolbar-class"
-                    editorClassName="demo-editor"                                                                               
-                    onEditorStateChange={handleEditorChange}
-                    toolbar={{
-                        options: ['inline', 'blockType', 'textAlign', 
-                                  'history','emoji'],                                
-                        inline: {
-                          options: ['bold','italic',  'underline' , 'strikethrough'],
-                          bold: { className: 'demo-option-custom' },
-                          italic: { className: 'demo-option-custom' },
-                          underline: { className: 'demo-option-custom' },
-                          strikethrough: {className: 'demo-option-custom' },
-                          monospace: { className: 'demo-option-custom' },
-                          superscript: {className: 'demo-option-custom'},
-                          subscript: { className: 'demo-option-custom' }
-                        },
-                        blockType: {className: 'demo-option-custom-wide',
-                        dropdownClassName: 'demo-dropdown-custom'},
-                    }}
+              <div class="container">
+                <Editor
+                  initialEditorState={editorState}
+                  wrapperClassName="wrapper-class"
+                  wrapperStyle={wrapperStyle}
+                  editorStyle={editorStyle}
+                  toolbarClassName="toolbar-class"
+                  editorClassName="demo-editor"
+                  onEditorStateChange={handleEditorChange}
+                  toolbar={{
+                      options: ['inline', 'blockType', 'textAlign', 
+                                'history','emoji'],
+                      inline: {
+                        options: ['bold','italic',  'underline' , 'strikethrough'],
+                        bold: { className: 'demo-option-custom' },
+                        italic: { className: 'demo-option-custom' },
+                        underline: { className: 'demo-option-custom' },
+                        strikethrough: {className: 'demo-option-custom' },
+                        monospace: { className: 'demo-option-custom' },
+                        superscript: {className: 'demo-option-custom'},
+                        subscript: { className: 'demo-option-custom' }
+                      },
+                      blockType: {className: 'demo-option-custom-wide',
+                      dropdownClassName: 'demo-dropdown-custom'},
+                  }}
                 />
+              </div>
             </div> 
                 <br/><button class="btn btn-outline-dark" onClick={handleChangeEdit}>Submit</button>&nbsp;
-                <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>}  
+                <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>} 
+                {shareClicked &&
+                  <div class="card-body p-5">
+                    <h6 class="text-capitalize p-2">Enter your email to share this note:</h6>
+                    <form>
+                      <div class="form-outline mb-5">
+                        <input type="email" class="form-control form-control-lg" style={{maxWidth: '50%'}} placeholder="Enter Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
+                        <div>
+                          <button class="btn btn-outline-dark" style={{padding: '5px', minWidth: '90px'}} onClick={shareSubmit}>Submit</button>&nbsp;&nbsp;
+                          <button class="btn btn-dark" style={{padding: '5px', minWidth: '90px'}} onClick={cancelShare}>Cancel</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                }
             <div>
                 <table class="table table-bordered table-hover">
                 <thead><b><i>NOTES</i></b></thead>
-                <tbody>{notes.map((notes)=>
-                  <tr><li><div className="preview" dangerouslySetInnerHTML={createMarkup(notes)}></div><td>
+                <tbody>
+                  {notes.map((notes)=>
+                  <tr><li>
+                    <div className="preview" dangerouslySetInnerHTML={createMarkup(notes)}></div><td>
                   <button class="btn btn-outline-dark" onClick={() => {editNote(notes)}}>Update</button>&nbsp;
+                  <button class="btn btn-outline-dark" onClick={() => {share(notes)}}>Share</button>&nbsp;
                   <button class="btn btn-outline-dark" onClick={() => lockNotes(notes)}>Lock</button>&nbsp;
                   <button class="btn btn-dark" onClick={() => delNote(notes)}>Delete</button></td>
                 </li></tr>)
