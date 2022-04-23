@@ -422,11 +422,20 @@ function ViewNotes(){
             </div> 
                 <br/><button class="btn btn-outline-dark" onClick={handleChangeEdit}>Submit</button>&nbsp;
                 <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>} 
-                {shareClicked && <div>Enter email to share this note:<br/>
-                  <input type="email" placeholder="Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
-                  <button onClick={shareSubmit}>Submit</button>&nbsp;&nbsp;
-                  <button onClick={cancelShare}>Cancel</button>
-                  </div>} 
+                {shareClicked &&
+                  <div class="card-body p-5">
+                    <h6 class="text-capitalize p-2">Enter your email to share this note:</h6>
+                    <form>
+                      <div class="form-outline mb-5">
+                        <input type="email" class="form-control form-control-lg" style={{maxWidth: '50%'}} placeholder="Enter Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
+                        <div>
+                          <button class="btn btn-outline-dark" style={{padding: '5px', minWidth: '90px'}} onClick={shareSubmit}>Submit</button>&nbsp;&nbsp;
+                          <button class="btn btn-dark" style={{padding: '5px', minWidth: '90px'}} onClick={cancelShare}>Cancel</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                }
             <div>
                 <table class="table table-bordered table-hover">
                 <thead><b><i>NOTES</i></b></thead>
