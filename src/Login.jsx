@@ -17,20 +17,9 @@ function Login(){
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [userMobile, setUserMobile] = useState("");
-  const [gCount, setGCount] = useState(0);
   
   toast.configure()
 
-  useEffect(()=>{
-    if(gCount===0)
-    {
-        setGCount(0);
-    }
-    if(gCount===1)
-    {
-        setGCount(1);
-    }
-  },[gCount])
 
   useEffect(() => {
         db.collection("usersData").onSnapshot((snapshot) => {

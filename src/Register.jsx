@@ -1,8 +1,12 @@
 import db from "./config";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify';
+import AuthenticationService from "./AuthenticationService";
 import "./App.css";
 import "./Register.css";
 import 'bootstrap/dist/css/bootstrap.css';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from "./Login";
   
 function Register() {
@@ -10,12 +14,14 @@ function Register() {
   const [userPassword, setUserPassword] = useState("");
   const [userMobile, setUserMobile] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [usersData, setUsersData] = useState([]);
   const [nameErr,setNameErr] = useState({});
   const [emailErr,setEmailErr] = useState({});
   const [mobileErr,setMobileErr] = useState({});
   const [passwordErr,setPasswordErr] = useState({});
   const [valid,setValid] = useState(true); 
+  const navigate = useNavigate();
+
+  toast.configure()
 
   useEffect(() => {
     const emailErr = {};
@@ -69,7 +75,9 @@ function Register() {
       name: userName,
       password: userPassword,
       email: userEmail,
-      mobile: userMobile
+      mobile: userMobile,
+      notes: [],
+      noteslocked: []
     });
 
     setUserName("");
@@ -160,7 +168,10 @@ const formValidation = () =>{
 }
   
   function alertF(){
-      alert("Registered Succesfully")
+      toast.success('Registered Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+      setTimeout(function(){
+      navigate("/login")
+    },2500)
   }
 
   return (
