@@ -7,9 +7,8 @@ import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Welcome.css';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';  
-import { EditorState } from 'draft-js';
+import { convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { convertToHTML} from 'draft-convert';
 import { useNavigate } from "react-router-dom";
 
 function AddNotes(){
@@ -56,17 +55,17 @@ function AddNotes(){
 
     const handleEditorChange = (state) => {
         setEditorState(state);
-        convertContentToHTML();
+        convertContentToRaw();
       }
 
-    const convertContentToHTML = () => {
-        let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+    const convertContentToRaw = () => {
+        let currentContentAsHTML = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
         setConvertedContent(currentContentAsHTML);
       }
 
     function handleChange(){
         var ciphertext = CryptoJS.AES.encrypt(convertedContent, email).toString();
-          if(convertedContent.length>7){
+          if(convertedContent.length>132){
               db.collection("usersData").doc(id).set({
                 "notes": firebase.firestore.FieldValue.arrayUnion(ciphertext)
               },
@@ -83,7 +82,7 @@ function AddNotes(){
         }
 
     return(
-        <div class="container">
+        <div>
             <Editor
                 initialEditorState={editorState}
                 wrapperClassName="wrapper-class"
@@ -94,7 +93,7 @@ function AddNotes(){
                 onEditorStateChange={handleEditorChange}
                 toolbar={{
                   options: ['inline', 'blockType', 'textAlign',
-                            'history','emoji'],
+                            'history','emoji','image'],
                   inline: {
                     options: ['bold','italic','underline','strikethrough'],
                     bold: { className: 'demo-option-custom' },

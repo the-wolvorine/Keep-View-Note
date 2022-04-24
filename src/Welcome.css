@@ -9,3 +9,27 @@
     padding: 10px;
     min-width: 150px;
 }
+.splitLeft{
+    height: 100%;
+    width: 33%;
+    z-index: 1;
+    position: absolute;
+    top: 10;
+    left: 10;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-top: 20px;
+  }
+.splitRight {
+    height: 100%;
+    width: 60%;
+    z-index: 1;
+    position: absolute;
+    top: 15;
+    right: 0;
+    overflow-y: hidden;
+    padding-top: 67px;
+}
+.image{
+    position: relative;
+}
