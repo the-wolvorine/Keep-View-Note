@@ -37,12 +37,21 @@ function ViewNotes(){
     const [shareClicked, setShareClicked] = useState(false);
     const [shareEmail, setShareEmail] = useState("");
     const [sharenote,setShareNote] = useState("")
+    const [viewSharedNotesSuccess, setViewSharedNotesSuccess ] = useState(false);
+    const [viewsharednotes, setViewSharedNotes ] = useState("");
+    const [clickedEditSharedNote , setClickedEditSharedNote] = useState(false)
+    const [sharedEmail,setSharedEmail ] = useState("")
     const navigate = useNavigate();
 
     function sm(notes){
         var bytes = CryptoJS.AES.decrypt(notes, email);
         var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
         let content = convertFromRaw(JSON.parse(decryptedData));
+        setEditorState(EditorState.createWithContent(content))
+    }
+
+    function SharedNoteSm(notes){
+        let content = convertFromRaw(JSON.parse(notes));
         setEditorState(EditorState.createWithContent(content))
     }
 
@@ -127,6 +136,17 @@ function ViewNotes(){
     },[clicked])
 
     useEffect(()=>{
+        if(viewSharedNotesSuccess===true)
+        {
+        setViewSharedNotesSuccess(true);
+        }
+        if(viewSharedNotesSuccess===false)
+        {
+        setViewSharedNotesSuccess(false);
+        }
+    },[viewSharedNotesSuccess])
+
+    useEffect(()=>{
         if(clickedEditNoteLocked===true)
         {
         setClickedEditNoteLocked(true);
@@ -149,6 +169,7 @@ function ViewNotes(){
             setId(element.id)
             setLockedNotes(element.data().noteslocked.reverse())
             setOriginalPassword(element.data().password)
+            setViewSharedNotes(element.data().sharednotes)
             if(element.data().notes.length===0){
             setEmpty(true)
         }
@@ -171,6 +192,7 @@ function ViewNotes(){
         db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked.reverse())
         setNotes(doc.data().notes.reverse())
+        setViewSharedNotes(doc.data().sharednotes)
         updateEmpty()
     }))
     }
@@ -188,6 +210,7 @@ function ViewNotes(){
         setClickedEditNote(false)
         db.collection("usersData").doc(id).get().then((function(doc){
         setNotes(doc.data().notes.reverse())
+        setViewSharedNotes(doc.data().sharednotes)
         updateEmpty()
         })) 
         toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
@@ -212,6 +235,7 @@ function ViewNotes(){
         setClickedEditNoteLocked(false)
         db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked.reverse())
+        setViewSharedNotes(doc.data().sharednotes)
         updateEmpty()
         })) 
         toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
@@ -254,6 +278,15 @@ function ViewNotes(){
         setClickedEditNoteLocked(true)
     }
 
+    function editSharedNote(note, email){
+        SharedNoteSm(note)
+        setSharedEmail(email)
+        setClicked(true)
+        setClickedEditNote(false)
+        setClickedEditNoteLocked(false)
+        setClickedEditSharedNote(true)
+    }
+
     function delNote(note){
         db.collection("usersData").doc(id).set({
         "notes": firebase.firestore.FieldValue.arrayRemove(note)
@@ -263,6 +296,7 @@ function ViewNotes(){
         db.collection("usersData").doc(id).get().then((function(doc){
         setNotes(doc.data().notes.reverse())
         setLockedNotes(doc.data().noteslocked.reverse())
+        setViewSharedNotes(doc.data().sharednotes)
         updateEmpty()
         })) 
         setClicked(false)
@@ -301,6 +335,7 @@ function ViewNotes(){
         db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked.reverse())
         setNotes(doc.data().notes.reverse())
+        setViewSharedNotes(doc.data().sharednotes)
         updateEmpty()
         })) 
         setClicked(false)
@@ -387,6 +422,12 @@ function ViewNotes(){
         return(text_to_display)
     }
 
+    const displayShared=(notes)=>{
+        var d=JSON.parse(notes)
+        var text_to_display=d.blocks[0].text;
+        return(text_to_display)
+    }
+
     function handleChange(){
         var ciphertext = CryptoJS.AES.encrypt(convertedContent1, email).toString();
         if(convertedContent1.length>132){
@@ -397,6 +438,7 @@ function ViewNotes(){
         toast.success('Note saved Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
         db.collection("usersData").doc(id).get().then((function(doc){
         setNotes(doc.data().notes.reverse())
+        setViewSharedNotes(doc.data().sharednotes)
         setEditorState1(()=>EditorState.createEmpty())
         })) 
         }
@@ -443,6 +485,14 @@ function ViewNotes(){
     function cancelShare(){
         setShareClicked(false)
     }
+
+    function viewSharedNotes(){
+        setViewSharedNotesSuccess(true);
+    }
+
+    function closeShared(){
+        setViewSharedNotesSuccess(false)
+    }
  
  return(
  <div class="container bootstrap snippets bootdeys">
@@ -464,13 +514,22 @@ function ViewNotes(){
         <table class="table table-bordered table-hover">
         <thead><b><i>NOTES</i></b></thead>
         <tbody>{notes.map((notes)=>
-        <tr><li onClick={() => {editNote(notes)}}>{display(notes)}
+        <tr><li style={{cursor:'pointer'}} onClick={() => {editNote(notes)}}>{display(notes)}
         </li></tr>)
         }
         </tbody>
         </table>
         
     </div>
+    {!viewSharedNotesSuccess && <table class="table table-bordered table-hover"><thead style={{cursor:'pointer'}} onClick={viewSharedNotes}><b><i>SHARED NOTES</i></b></thead></table>}
+    {viewSharedNotesSuccess && <div>
+            <table class="table table-bordered table-hover">
+            <thead style={{cursor:'pointer'}} onClick={closeShared}><b><i>SHARED NOTES</i></b></thead>
+            <tbody>{viewsharednotes.map(({sharednote,email})=>
+            <tr><li onClick={()=>{editSharedNote(sharednote,email)}}>{displayShared(sharednote)}
+            </li></tr>)
+            }</tbody></table>
+        </div>}
     {empty && <div> <center>You haven't saved any Note yet.<br/> Please go ahead and add your new note today!!! </center></div>}
     {!unlockSuccess && <b><button class="btn btn-outline-dark" onClick={unlockNotes}>LOCKED <img src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="30"/></button></b>}
     {unlocknotes && <div>
@@ -488,7 +547,7 @@ function ViewNotes(){
         </div>}
     </div>}
     {unlocknotes && unlockSuccess && <div><button class="btn btn-dark" onClick={lockAgain}>Hide</button></div>}
-    
+    <br/>
     {<div><button class="btn btn-dark" onClick={cancelviewNote}>Close</button></div>}
     </div><div class="splitRight">
     {clicked && clickedEditNote && !shareClicked && <div><div class="image"><img onClick={()=>lockNotes(editnote)} style={{cursor:'pointer'}} src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="22"/>&nbsp;<img onClick={()=>delNote(editnote)} style={{cursor:'pointer'}} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>&nbsp;&nbsp;<img onClick={()=>share(editnote)} style={{cursor:'pointer'}} src="https://www.seekpng.com/png/detail/119-1191645_share-button-png-share-icon-svg.png" height="15"/></div><div className="input-group">
@@ -567,7 +626,38 @@ function ViewNotes(){
             />
     </div> 
     <button class="btn btn-outline-dark" onClick={handleChangeEditLocked}>Submit</button>&nbsp;
-    <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button></div>} 
+    <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button></div>}
+    {clickedEditSharedNote && !clickedEditNoteLocked && !clickedEditNote && <div><b> SHARED NOTE &nbsp; - {sharedEmail}</b>
+    <div className="input-group">
+        <Editor
+            initialEditorState={editorState}
+            editorState={editorState}
+            wrapperClassName="wrapper-class"
+            wrapperStyle={wrapperStyle}
+            editorStyle={editorStyle}
+            toolbarClassName="toolbar-class"
+            editorClassName="demo-editor" 
+            onEditorStateChange={handleEditorChange}
+            toolbar={{
+            options: ['inline', 'blockType', 'textAlign', 
+            'history','emoji','image'], 
+            inline: {
+            options: ['bold','italic', 'underline' , 'strikethrough'],
+            bold: { className: 'demo-option-custom' },
+            italic: { className: 'demo-option-custom' },
+            underline: { className: 'demo-option-custom' },
+            strikethrough: {className: 'demo-option-custom' },
+            monospace: { className: 'demo-option-custom' },
+            superscript: {className: 'demo-option-custom'},
+            subscript: { className: 'demo-option-custom' }
+            },
+            blockType: {className: 'demo-option-custom-wide',
+            dropdownClassName: 'demo-dropdown-custom'},
+            }}
+            />
+
+        </div>
+        </div>} 
     {!clicked && <div><b>Add New Note</b><div className="input-group">
             <Editor
             initialEditorState={editorState1}
