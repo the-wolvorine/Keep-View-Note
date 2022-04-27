@@ -258,7 +258,7 @@ function ViewNotes(){
     }
 
     function cancelChangeEditLocked(){
-        setClickedEditNoteLocked(false)
+        // setClickedEditNoteLocked(false)
         setClicked(false)
     }
 
@@ -306,7 +306,7 @@ function ViewNotes(){
         db.collection("usersData")
         .get()
         .then((function(doc){
-        doc.forEach(element => { 
+        doc.forEach(element => {
         if(element.data().email===email)
         {
         if(element.data().notes.length===0){
@@ -493,7 +493,7 @@ function ViewNotes(){
     function closeShared(){
         setViewSharedNotesSuccess(false)
     }
- 
+
  return(
  <div class="container bootstrap snippets bootdeys">
     <div class="row">
@@ -501,52 +501,59 @@ function ViewNotes(){
             <div class="card-big-shadow">
                 <div class="card" data-background="color" data-color="blue" data-radius="none">
                     <div class="content">
-                        <h6 class="category">Welcome {name}</h6>
-
+                        <h6 class="category">Welcome, {name}</h6>
                     </div>
                 </div>
             </div>
         </div>
     <div className="splitLeft">
-    <br/>
-    <br/>
     <div>
-        <table class="table table-bordered table-hover">
-        <thead><b><i>NOTES</i></b></thead>
-        <tbody>{notes.map((notes)=>
-        <tr><li style={{cursor:'pointer'}} onClick={() => {editNote(notes)}}>{display(notes)}
-        </li></tr>)
-        }
-        </tbody>
-        </table>
-        
-    </div>
-    {!viewSharedNotesSuccess && <table class="table table-bordered table-hover"><thead style={{cursor:'pointer'}} onClick={viewSharedNotes}><b><i>SHARED NOTES</i></b></thead></table>}
-    {viewSharedNotesSuccess && <div>
+        <b>NOTES</b>
+        <div class="line-separator"></div>
+        <div class="scroll">
             <table class="table table-bordered table-hover">
-            <thead style={{cursor:'pointer'}} onClick={closeShared}><b><i>SHARED NOTES</i></b></thead>
-            <tbody>{viewsharednotes.map(({sharednote,email})=>
-            <tr><li onClick={()=>{editSharedNote(sharednote,email)}}>{displayShared(sharednote)}
-            </li></tr>)
-            }</tbody></table>
+                <tbody>{notes.map((notes)=>
+                <tr><li style={{cursor:'pointer'}} onClick={() => {editNote(notes)}}>{display(notes)}
+                </li></tr>)
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {empty && <div> <center>You haven't created any Note yet.<br/> Please go ahead and add a new note!!! </center></div>}
+    {!viewSharedNotesSuccess && <b><button class="btn btn-outline-dark" onClick={viewSharedNotes}>VIEW SHARED NOTES</button></b>}
+    {viewSharedNotesSuccess &&
+        <div>
+            <b>SHARED NOTES</b>
+            <div class="scroll">
+                <table class="table table-bordered table-hover">
+                <tbody>{viewsharednotes.map(({sharednote,email})=>
+                <tr><li onClick={()=>{editSharedNote(sharednote,email)}}>{displayShared(sharednote)}
+                </li></tr>)
+                }</tbody></table>
+            </div>
+            <button class="btn btn-dark" onClick={closeShared}>Close Shared</button>
         </div>}
-    {empty && <div> <center>You haven't saved any Note yet.<br/> Please go ahead and add your new note today!!! </center></div>}
-    {!unlockSuccess && <b><button class="btn btn-outline-dark" onClick={unlockNotes}>LOCKED <img src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="30"/></button></b>}
+    {!unlockSuccess && <b><button class="btn btn-outline-dark" onClick={unlockNotes}>LOCKED</button></b>}
     {unlocknotes && <div>
     <div class="form-outline mb-4">
         {!unlockSuccess && <div><br/><input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password" value={userPassword} onChange={(e) => setUserPassword(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { unlockClicked();}}}/></div>}
     </div>
-    {!unlockSuccess && <div class="d-flex justify-content-center"><button onClick={unlockClicked} className="btn btn-block btn-lg btn-dark">unlock</button> </div>}
-        {unlockSuccess && <div>
-            <table class="table table-bordered table-hover">
-            <thead><b><i>UNLOCKED &nbsp;<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="20"/></i></b></thead>
-            <tbody>{lockednotes.map((notes)=>
-            <tr><li onClick={()=>{editNoteLocked(notes)}}>{display(notes)}
-            </li></tr>)
-            }</tbody></table>
-        </div>}
+    {!unlockSuccess && <div><button onClick={unlockClicked} className="btn btn-block btn-lg btn-dark">unlock</button> </div>}
+        {unlockSuccess && 
+            <div>
+                <b>LOCKED NOTES</b>
+                <div class="line-separator"></div>
+                <div class="scroll">
+                    <table class="table table-bordered table-hover">
+                    <tbody>{lockednotes.map((notes)=>
+                    <tr><li onClick={()=>{editNoteLocked(notes)}}>{display(notes)}
+                    </li></tr>)
+                    }</tbody></table>
+                </div>
+            </div>}
     </div>}
-    {unlocknotes && unlockSuccess && <div><button class="btn btn-dark" onClick={lockAgain}>Hide</button></div>}
+    {unlocknotes && unlockSuccess && <div><button class="btn btn-dark" onClick={lockAgain}>Close Locked</button></div>}
     <br/>
     {<div><button class="btn btn-dark" onClick={cancelviewNote}>Close</button></div>}
     </div><div class="splitRight">
@@ -585,18 +592,18 @@ function ViewNotes(){
         {clicked && clickedEditNote && shareClicked &&
         <div class="card-body p-5">
             <h6 class="text-capitalize p-2">Enter email to share this note:</h6>
-                <form>
-                    <div class="form-outline mb-5">
-                    <input type="email" class="form-control form-control-lg" style={{maxWidth: '75%'}} placeholder="Enter Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
-                    <div>
-                    <button class="btn btn-outline-dark" style={{padding: '10px', minWidth: '90px'}} onClick={shareSubmit}>Submit</button>&nbsp;&nbsp;
-                    <button class="btn btn-dark" style={{padding: '10px', minWidth: '90px'}} onClick={cancelShare}>Cancel</button>
-                    </div>
-                    </div>
-                </form>
+            <form>
+                <div class="form-outline mb-5">
+                <input type="email" class="form-control form-control-lg" style={{maxWidth: '75%'}} placeholder="Enter Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
+                <div>
+                <button class="btn btn-outline-dark" style={{padding: '10px', minWidth: '90px'}} onClick={shareSubmit}>Submit</button>&nbsp;&nbsp;
+                <button class="btn btn-dark" style={{padding: '10px', minWidth: '90px'}} onClick={cancelShare}>Cancel</button>
+                </div>
+                </div>
+            </form>
         </div>
-    }
-    </div> 
+        }
+    </div>
     {clicked && !clickedEditNote && clickedEditNoteLocked &&<div><div class="image"><img onClick={()=>unlockNotesRemove(editnotelocked)} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="16"/>&nbsp;<img onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/></div><div className="input-group">
             <Editor
             initialEditorState={editorState}
@@ -627,7 +634,9 @@ function ViewNotes(){
     </div> 
     <button class="btn btn-outline-dark" onClick={handleChangeEditLocked}>Submit</button>&nbsp;
     <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button></div>}
-    {clickedEditSharedNote && !clickedEditNoteLocked && !clickedEditNote && <div><b> SHARED NOTE &nbsp; - {sharedEmail}</b>
+    {clickedEditSharedNote && !clickedEditNoteLocked && !clickedEditNote && <div>
+        <div class="image"><img onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/></div><div className="input-group"></div>
+        <b> SHARED NOTE &nbsp; - {sharedEmail}</b>
     <div className="input-group">
         <Editor
             initialEditorState={editorState}
@@ -655,10 +664,9 @@ function ViewNotes(){
             dropdownClassName: 'demo-dropdown-custom'},
             }}
             />
-
         </div>
-        </div>} 
-    {!clicked && <div><b>Add New Note</b><div className="input-group">
+        </div>}
+        {!clicked && <div><b>ADD NEW NOTE</b><div className="input-group">
             <Editor
             initialEditorState={editorState1}
             editorState={editorState1}
@@ -685,9 +693,9 @@ function ViewNotes(){
             dropdownClassName: 'demo-dropdown-custom'},
             }}
             />
-    <button class="btn btn-outline-dark" onClick={handleChange}>Add</button>
-    </div>
-    </div>}
+            <button class="btn btn-outline-dark" onClick={handleChange}>Add</button>
+            </div>
+        </div>}
     </div>
     </div>
  </div>
