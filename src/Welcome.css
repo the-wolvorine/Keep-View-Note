@@ -10,26 +10,24 @@
     min-width: 150px;
 }
 .splitLeft{
-    height: 100%;
-    width: 33%;
-    z-index: 1;
-    position: absolute;
-    top: 10;
-    left: 10;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    padding-top: 20px;
+    width: 35%;
+    margin-top: 1rem;
   }
 .splitRight {
-    height: 100%;
-    width: 60%;
-    z-index: 1;
-    position: absolute;
-    top: 15;
-    right: 0;
-    overflow-y: hidden;
-    padding-top: 67px;
+    width: 65%;
+    margin-top: 1rem;
 }
 .image{
     position: relative;
+}
+
+.line-separator {
+    background-color: #000;
+    flex-grow: 5;
+    height: 2px;
+}
+
+.scroll{
+    overflow-y: scroll;
+    max-height: 20rem;
 }

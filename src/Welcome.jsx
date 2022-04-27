@@ -35,24 +35,20 @@ function Welcome(){
 
 
     return(
-        <div class="container bootstrap snippets bootdeys">
-          <div class="row">
-              <div class="content-card">
-                  <div class="card-big-shadow">
-                      <div class="card" data-background="color" data-color="blue" data-radius="none">
-                          <div class="content">
-                              <h6 class="category">Welcome {name}</h6>
-                                <div>
-                                  <p class="description">Start Creating your notes...</p>
-                                  <button class="btn btn-outline-dark" onClick={addNotes}>Add New Notes</button>
-                                </div>
-                               <button class="btn btn-outline-dark" onClick={viewNotes}>View Saved Notes</button>
-                          </div>
-                      </div>
-                  </div>
+      <div class="container">
+        <div class="row">
+          <div class="card shadow-lg p-3 bg-white rounded">
+            <div class="content">
+              <h6 class="category">Welcome {name}</h6>
+              <div>
+                <p class="description">Start Creating your notes...</p>
+                <button class="btn btn-outline-dark" onClick={addNotes}>Add New Notes</button>
               </div>
+              <button class="btn btn-outline-dark" onClick={viewNotes}>View Saved Notes</button>
             </div>
-            </div>
+          </div>
+        </div>
+      </div>
     );
 }
 export default Welcome;

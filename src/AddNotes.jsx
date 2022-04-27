@@ -82,7 +82,7 @@ function AddNotes(){
         }
 
     return(
-        <div>
+        <div class="container">
             <Editor
                 initialEditorState={editorState}
                 wrapperClassName="wrapper-class"
