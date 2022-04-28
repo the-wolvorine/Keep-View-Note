@@ -236,8 +236,9 @@ function ViewNotes(){
         db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked.reverse())
         setViewSharedNotes(doc.data().sharednotes)
+        cancelShared()
         updateEmpty()
-        })) 
+        }))
         toast.success('Note Updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
         setClicked(false)
         }
@@ -260,6 +261,10 @@ function ViewNotes(){
     function cancelChangeEditLocked(){
         // setClickedEditNoteLocked(false)
         setClicked(false)
+    }
+
+    function cancelShared(){
+        setClickedEditSharedNote(false)
     }
 
     function editNote(note){
@@ -388,9 +393,9 @@ function ViewNotes(){
         border: '1px solid #969696',
     }
     const editorStyle = {
-        height:'28rem',
-        width: '46rem',
-        padding:'1rem'
+        paddingLeft:'1rem',
+        height: '35rem',
+        width: '48rem'
     
     }
 
@@ -635,7 +640,6 @@ function ViewNotes(){
     <button class="btn btn-outline-dark" onClick={handleChangeEditLocked}>Submit</button>&nbsp;
     <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button></div>}
     {clickedEditSharedNote && !clickedEditNoteLocked && !clickedEditNote && <div>
-        <div class="image"><img onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/></div><div className="input-group"></div>
         <b> SHARED NOTE &nbsp; - {sharedEmail}</b>
     <div className="input-group">
         <Editor
