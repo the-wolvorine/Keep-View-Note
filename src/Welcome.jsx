@@ -41,7 +41,7 @@ function Welcome(){
             <div class="content">
               <h6 class="category">Welcome {name}</h6>
               <div>
-                <p class="description">Start Creating your notes...</p>
+                <p class="description">Start creating your notes...</p>
                 <button class="btn btn-outline-dark" onClick={addNotes}>Add New Notes</button>
               </div>
               <button class="btn btn-outline-dark" onClick={viewNotes}>View Saved Notes</button>

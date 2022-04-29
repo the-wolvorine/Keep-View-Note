@@ -389,7 +389,6 @@ function ViewNotes(){
     }
     const editorStyle = {
         height:'28rem',
-        width: '46rem',
         padding:'1rem'
     
     }
@@ -497,14 +496,8 @@ function ViewNotes(){
  return(
  <div class="container bootstrap snippets bootdeys">
     <div class="row">
-        <div class="content-card">
-            <div class="card-big-shadow">
-                <div class="card" data-background="color" data-color="blue" data-radius="none">
-                    <div class="content">
-                        <h6 class="category">Welcome, {name}</h6>
-                    </div>
-                </div>
-            </div>
+        <div class="content border rounded border-dark shadow p-3 mb-2 bg-white rounded">
+            <h6 class="category">Welcome, {name}</h6>
         </div>
     <div className="splitLeft">
     <div>
@@ -521,7 +514,7 @@ function ViewNotes(){
         </div>
     </div>
     {empty && <div> <center>You haven't created any Note yet.<br/> Please go ahead and add a new note!!! </center></div>}
-    {!viewSharedNotesSuccess && <b><button class="btn btn-outline-dark" onClick={viewSharedNotes}>VIEW SHARED NOTES</button></b>}
+    {!viewSharedNotesSuccess && <b><button class="btn btn-outline-dark" onClick={viewSharedNotes}>View Shared Notes</button></b>}
     {viewSharedNotesSuccess &&
         <div>
             <b>SHARED NOTES</b>
@@ -534,7 +527,7 @@ function ViewNotes(){
             </div>
             <button class="btn btn-dark" onClick={closeShared}>Close Shared</button>
         </div>}
-    {!unlockSuccess && <b><button class="btn btn-outline-dark" onClick={unlockNotes}>LOCKED</button></b>}
+    {!unlockSuccess && <b><button class="btn btn-outline-dark" onClick={unlockNotes}>Locked Notes</button></b>}
     {unlocknotes && <div>
     <div class="form-outline mb-4">
         {!unlockSuccess && <div><br/><input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password" value={userPassword} onChange={(e) => setUserPassword(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { unlockClicked();}}}/></div>}
@@ -557,7 +550,8 @@ function ViewNotes(){
     <br/>
     {<div><button class="btn btn-dark" onClick={cancelviewNote}>Close</button></div>}
     </div><div class="splitRight">
-    {clicked && clickedEditNote && !shareClicked && <div><div class="image"><img onClick={()=>lockNotes(editnote)} style={{cursor:'pointer'}} src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="22"/>&nbsp;<img onClick={()=>delNote(editnote)} style={{cursor:'pointer'}} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>&nbsp;&nbsp;<img onClick={()=>share(editnote)} style={{cursor:'pointer'}} src="https://www.seekpng.com/png/detail/119-1191645_share-button-png-share-icon-svg.png" height="15"/></div><div className="input-group">
+    {clicked && clickedEditNote && !shareClicked && <div><div class="image"><img onClick={()=>lockNotes(editnote)} style={{cursor:'pointer'}} src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="22"/>&nbsp;<img onClick={()=>delNote(editnote)} style={{cursor:'pointer'}} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>&nbsp;&nbsp;<img onClick={()=>share(editnote)} style={{cursor:'pointer'}} src="https://www.seekpng.com/png/detail/119-1191645_share-button-png-share-icon-svg.png" height="15"/></div>
+        <div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState}
             editorState={editorState}
@@ -604,7 +598,9 @@ function ViewNotes(){
         </div>
         }
     </div>
-    {clicked && !clickedEditNote && clickedEditNoteLocked &&<div><div class="image"><img onClick={()=>unlockNotesRemove(editnotelocked)} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="16"/>&nbsp;<img onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/></div><div className="input-group">
+    {clicked && !clickedEditNote && clickedEditNoteLocked && 
+        <div class="image"><img onClick={()=>unlockNotesRemove(editnotelocked)} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="16"/>&nbsp;<img onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>
+        <div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState}
             editorState={editorState}
@@ -631,13 +627,14 @@ function ViewNotes(){
             dropdownClassName: 'demo-dropdown-custom'},
             }}
             />
-    </div> 
-    <button class="btn btn-outline-dark" onClick={handleChangeEditLocked}>Submit</button>&nbsp;
-    <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button></div>}
+        </div> 
+        <button class="btn btn-outline-dark" onClick={handleChangeEditLocked}>Submit</button>&nbsp;
+        <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button>
+    </div>}
     {clickedEditSharedNote && !clickedEditNoteLocked && !clickedEditNote && <div>
-        <div class="image"><img onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/></div><div className="input-group"></div>
+        <div class="image"><img onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/></div><div></div>
         <b> SHARED NOTE &nbsp; - {sharedEmail}</b>
-    <div className="input-group">
+    <div class="shadow mb-3 mt-1 bg-white rounded">
         <Editor
             initialEditorState={editorState}
             editorState={editorState}
@@ -666,7 +663,7 @@ function ViewNotes(){
             />
         </div>
         </div>}
-        {!clicked && <div><b>ADD NEW NOTE</b><div className="input-group">
+        {!clicked && <div><b>ADD NEW NOTE</b><div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState1}
             editorState={editorState1}
@@ -693,8 +690,8 @@ function ViewNotes(){
             dropdownClassName: 'demo-dropdown-custom'},
             }}
             />
-            <button class="btn btn-outline-dark" onClick={handleChange}>Add</button>
             </div>
+            <button class="btn btn-outline-dark" onClick={handleChange}>Add</button>
         </div>}
     </div>
     </div>
