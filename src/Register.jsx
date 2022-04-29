@@ -168,7 +168,7 @@ const formValidation = () =>{
 }
   
   function alertF(){
-      toast.success('Registered Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+      toast.success('Registered Succesfully. Please Login to Continue', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
       setTimeout(function(){
       navigate("/login")
     },2500)
@@ -196,7 +196,7 @@ const formValidation = () =>{
                      })}
                   </div> 
                   <div class="form-outline mb-4">
-                    <input type="tel" id="form3Example4cdg" class="form-control form-control-lg" placeholder="Mobile" value={userMobile} onChange={(e) => setUserMobile(e.target.value)}/>
+                    <input type="text" id="form3Example4cdg" class="form-control form-control-lg bfh-phone" data-format="+1 (ddd) ddd-dddd" placeholder="Mobile" value={userMobile} onChange={(e) => setUserMobile(e.target.value)}/>
                     {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
                      })}
