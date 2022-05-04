@@ -576,7 +576,7 @@ function ViewNotes(){
     {empty && <div> <center>You haven't created any Note yet.<br/> Please go ahead and add a new note!!! </center></div>}
     {/* {<div><button class="btn btn-dark" onClick={cancelviewNote}>Close</button></div>} */}
     </div><div class="splitRight">
-    {clicked && clickedEditNote && !shareClicked && <div><div class="image"><img onClick={()=>lockNotes(editnote)} style={{cursor:'pointer'}} src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="22"/>&nbsp;<img onClick={()=>delNote(editnote)} style={{cursor:'pointer'}} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>&nbsp;&nbsp;<img onClick={()=>share(editnote)} style={{cursor:'pointer'}} src="https://www.seekpng.com/png/detail/119-1191645_share-button-png-share-icon-svg.png" height="15"/></div>
+    {clicked && clickedEditNote && !shareClicked && <div><br/><br/><br/><div class="image"><img onClick={()=>lockNotes(editnote)} style={{cursor:'pointer'}} src="https://media.istockphoto.com/vectors/lock-icon-vector-id936681148?k=20&m=936681148&s=612x612&w=0&h=j6fxNWrJ09iE7khUsDWetKn_PwWydgIS0yFJBEonGow=" height="22"/>&nbsp;<img onClick={()=>delNote(editnote)} style={{cursor:'pointer'}} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>&nbsp;&nbsp;<img onClick={()=>share(editnote)} style={{cursor:'pointer'}} src="https://www.seekpng.com/png/detail/119-1191645_share-button-png-share-icon-svg.png" height="15"/></div>
         <div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState}
@@ -626,7 +626,7 @@ function ViewNotes(){
         }
     </div>
     {clicked && !clickedEditNote && clickedEditNoteLocked && unlockSuccess &&
-        <div class="image"><img style={{cursor:'pointer'}} onClick={()=>unlockNotesRemove(editnotelocked)} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="16"/>&nbsp;<img style={{cursor:'pointer'}} onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>
+        <div class="image"><br/><br/><img style={{cursor:'pointer'}} onClick={()=>unlockNotesRemove(editnotelocked)} src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCswczXCVvOOzNq90KITbZeWGTuN1LukqAeA&usqp=CAU" height="16"/>&nbsp;<img style={{cursor:'pointer'}} onClick={()=>delNoteLocked(editnotelocked)} src="https://icons-for-free.com/iconfiles/png/512/delete+24px-131985190578721347.png" height="20"/>
         <div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState}
@@ -699,7 +699,7 @@ function ViewNotes(){
             />
         </div>
         </div>}
-        {!clicked && <div><b>ADD NEW NOTE</b><div class="shadow mb-3 mt-1 bg-white rounded">
+        {!clicked && <div><br/><br/><b>ADD NEW NOTE</b><div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState1}
             placeholder="Start writing..."
