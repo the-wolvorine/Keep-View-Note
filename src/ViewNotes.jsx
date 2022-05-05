@@ -454,10 +454,10 @@ function ViewNotes(){
         var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
         var d=JSON.parse(decryptedData)
         var text_to_display=d.blocks[0].text;
-        if(text_to_display.length<50)
+        if(text_to_display.length<45)
         return(text_to_display)
         else{
-        var text_to_display1=text_to_display.substring(0,50)+"....";
+        var text_to_display1=text_to_display.substring(0,45)+"....";
         return(text_to_display1)
         }
     }
@@ -548,20 +548,24 @@ function ViewNotes(){
     <div>
         {<b> <button class="btn btn-outline-dark btn-sm" onClick={notesClicked}>Saved Notes</button></b>}&nbsp;{<b> <button class="btn btn-outline-dark btn-sm" onClick={viewSharedNotes}>Shared Notes</button></b>}
         <br/>
-        {!viewSharedNotesSuccess && notesclicked && 
-            <div>
-                <b>Notes&emsp;</b>
-            </div>}
+        {!viewSharedNotesSuccess && notesclicked && <b>Notes</b>}
         {viewSharedNotesSuccess && !notesclicked && <b>Shared notes</b>}
         <div class="line-separator"></div>
         <div class="scroll">
+            {!viewSharedNotesSuccess && notesClicked && empty &&
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                    <tr><p style={{ color: 'red' }}>Oops..! You don't have any notes to display</p></tr>
+                    </tbody>
+                </table>
+            }
             {!viewSharedNotesSuccess && notesclicked && <div><table class="table table-bordered table-hover">
                 <tbody>{notes.map((notes)=>
                 <tr><li style={{cursor:'pointer'}} onClick={() => {editNote(notes)}}>{display(notes)}
                 </li></tr>)
                 }
                 {!unlockSuccess &&lockednotes.map((notes)=>
-                    <tr><li style={{cursor:'pointer'}} onClick={()=>{editNoteLocked(notes)}}>{display(notes)}<i class="fa fa-lock" aria-hidden="true"></i>
+                    <tr><li style={{cursor:'pointer'}} onClick={()=>{editNoteLocked(notes)}}>{display(notes)} <i class="fa fa-lock" aria-hidden="true"></i>
                     </li></tr>)
                     }
                 {unlockSuccess && lockednotes.map((notes)=>
@@ -578,14 +582,11 @@ function ViewNotes(){
             {viewSharedNotesSuccess && !notesclicked && sharednull &&
                 <table class="table table-bordered table-hover">
                     <tbody>
-                    <tr><p>No Shared Notes to display
-                    </p></tr>
+                    <tr><p style={{ color: 'red' }}>Oops..! You don't have any shared notes to display</p></tr>
                     </tbody></table>
                 }
         </div>
     </div>
-    {empty && <div> <center>You haven't created any Note yet.<br/> Please go ahead and add a new note!!! </center></div>}
-    {/* {<div><button class="btn btn-dark" onClick={cancelviewNote}>Close</button></div>} */}
     </div><div class="splitRight">
     {clicked && clickedEditNote && !shareClicked && <div>
         <div class="image">
@@ -628,7 +629,7 @@ function ViewNotes(){
     <div class="splitRight">
         {clicked && clickedEditNote && shareClicked &&
         <div class="card-body p-5">
-            <h6 class="text-capitalize p-2">Enter email to share this note:</h6>
+            <h4 class="text-capitalize p-2">Enter email to share this note:</h4>
             <form>
                 <div class="form-outline mb-5">
                 <input type="email" class="form-control form-control-lg" style={{maxWidth: '75%'}} placeholder="Enter Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
@@ -678,10 +679,14 @@ function ViewNotes(){
         <button class="btn btn-dark" onClick={cancelChangeEditLocked}>Cancel</button>
     </div>}
     {clicked && !clickedEditNote && clickedEditNoteLocked && !unlockSuccess &&
-        <div>
-            <br/><center><h4>To view locked notes, enter your login password</h4></center><br/><input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password" value={userPassword} onChange={(e) => setUserPassword(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { unlockClicked();}}}/>
-        <br/>
-        <center><button onClick={unlockClicked} className="btn btn-block btn-lg btn-dark">unlock</button></center>
+        <div class="card-body p-5">
+            <h4 class="text-capitalize p-2">Enter your user password to view locked notes:</h4>
+            <form>
+                <div class="form-outline mb-5">
+                    <input type="password" class="form-control form-control-lg" style={{maxWidth: '75%'}} placeholder="Password" value={userPassword} onChange={(e) => setUserPassword(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { unlockClicked();}}}/>
+                </div>
+            </form>
+            <button onClick={unlockClicked} className="btn btn-dark">unlock</button>
         </div>
     }
     {clicked && clickedEditSharedNote && !clickedEditNoteLocked && !clickedEditNote &&
