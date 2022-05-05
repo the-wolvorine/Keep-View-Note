@@ -4,8 +4,8 @@ import "./App.css";
 import { useNavigate } from "react-router-dom";
 import AuthenticationService from "./AuthenticationService";
 import {toast} from 'react-toastify';
-import { GoogleLogin } from "react-google-login";
-import { clientId } from "./config";
+// import { GoogleLogin } from "react-google-login";
+// import { clientId } from "./config";
 import Register from "./Register.jsx";
 import 'react-toastify/dist/ReactToastify.css';
 import "./Login.css";
@@ -123,7 +123,7 @@ function Login(){
                 <div class="d-flex justify-content-center">
                 <button onClick={loginClicked} className="btn btn-block btn-lg btn-dark">Login</button>
                 </div>
-                <div class="or-container">
+                {/* <div class="or-container">
                   <div class="line-separator"></div>
                   <div class="or-label">or</div>
                   <div class="line-separator"></div>
@@ -138,7 +138,7 @@ function Login(){
                     style={{ marginTop: '100px' }}
                     isSignedIn={true}
                   />
-                </div>
+                </div> */}
                 <p class="text-center text-muted mt-5 mb-0">Don't have an account? <a href="/register" onClick={<Register/>} class="fw-bold text-body"><u>Signup here</u></a></p>
               </div>
             </div>
