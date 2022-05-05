@@ -34,7 +34,6 @@ function ViewNotes(){
     const [editorState1, setEditorState1] = useState(()=>EditorState.createEmpty());
     const [empty, setEmpty] = useState(false);
     const [emptylocked, setEmptyLocked] = useState(false);
-    const [emptyshared, setEmptyShared] = useState(false);
     const [shareClicked, setShareClicked] = useState(false);
     const [shareEmail, setShareEmail] = useState("");
     const [sharenote,setShareNote] = useState("")
@@ -43,6 +42,7 @@ function ViewNotes(){
     const [clickedEditSharedNote , setClickedEditSharedNote] = useState(false)
     const [sharedEmail,setSharedEmail ] = useState("")
     const [notesclicked, setNotesClicked ] = useState(true)
+    const [sharednull, setSharedNull] = useState(false);
     const navigate = useNavigate();
 
     function sm(notes){
@@ -70,6 +70,17 @@ function ViewNotes(){
         setEmpty(false);
         }
     },[empty])
+
+    useEffect(()=>{
+        if(sharednull===true)
+        {
+        setSharedNull(true);
+        }
+        if(sharednull===false)
+        {
+        setSharedNull(false);
+        }
+    },[sharednull])
 
     useEffect(()=>{
         if(shareClicked===true)
@@ -103,17 +114,6 @@ function ViewNotes(){
         setEmptyLocked(false);
         }
     },[emptylocked])
-
-    useEffect(()=>{
-        if(emptyshared===true)
-        {
-        setEmptyShared(true);
-        }
-        if(emptyshared===false)
-        {
-        setEmptyShared(false);
-        }
-    },[emptyshared])
 
     useEffect(()=>{
         if(unlockSuccess===true)
@@ -193,6 +193,13 @@ function ViewNotes(){
             setId(element.id)
             setLockedNotes(element.data().noteslocked.reverse())
             setOriginalPassword(element.data().password)
+            console.log("shared notes value"+element.data().sharednotes)
+            if(element.data().sharednotes===undefined){
+                setSharedNull(true)
+            }
+            if(element.data().sharednotes===null){
+                setSharedNull(true)
+            }
             setViewSharedNotes(element.data().sharednotes.reverse())
             if(element.data().notes.length===0){
             setEmpty(true)
@@ -205,12 +212,6 @@ function ViewNotes(){
         }
         if(element.data().noteslocked>0){
             setEmptyLocked(false)
-        }
-        if(element.data().sharednotes===0){
-            setEmptyShared(true)
-        }
-        if(element.data().sharednotes>0){
-            setEmptyShared(false)
         }
         } 
         }
@@ -566,11 +567,18 @@ function ViewNotes(){
                     }
                 </tbody>
             </table></div>}
-            {viewSharedNotesSuccess && !notesclicked && <table class="table table-bordered table-hover">
+            {viewSharedNotesSuccess && !notesclicked && !sharednull && <table class="table table-bordered table-hover">
                 <tbody>{viewsharednotes.map(({sharednote,email})=>
                 <tr><li onClick={()=>{editSharedNote(sharednote,email)}}>{displayShared(sharednote)}
                 </li></tr>)
                 }</tbody></table>}
+            {viewSharedNotesSuccess && !notesclicked && sharednull &&
+                <table class="table table-bordered table-hover">
+                    <tbody>
+                    <tr><p>No Shared Notes to display
+                    </p></tr>
+                    </tbody></table>
+                }
         </div>
     </div>
     {empty && <div> <center>You haven't created any Note yet.<br/> Please go ahead and add a new note!!! </center></div>}
