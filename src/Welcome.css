@@ -31,3 +31,7 @@
     overflow-y: scroll;
     max-height: 31rem;
 }
+
+.icon {
+    padding: 2px;
+}
