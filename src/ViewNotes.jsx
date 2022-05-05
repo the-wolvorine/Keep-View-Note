@@ -565,7 +565,7 @@ function ViewNotes(){
                 </li></tr>)
                 }
                 {!unlockSuccess &&lockednotes.map((notes)=>
-                    <tr><li style={{cursor:'pointer'}} onClick={()=>{editNoteLocked(notes)}}>{display(notes)} <i class="fa fa-lock" aria-hidden="true"></i>
+                    <tr><li style={{cursor:'pointer'}} onClick={()=>{editNoteLocked(notes)}}><b>Note is Locked &nbsp;</b><i class="fa fa-lock" aria-hidden="true"></i>
                     </li></tr>)
                     }
                 {unlockSuccess && lockednotes.map((notes)=>
