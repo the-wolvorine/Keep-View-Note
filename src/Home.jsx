@@ -1,17 +1,18 @@
 import db from "./config";
 import React, { useState, useEffect } from "react";
+import ReactTooltip from "react-tooltip";
 import firebase from 'firebase';
 import 'bootstrap/dist/css/bootstrap.css';
 import "./App.css";
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './Welcome.css';
+import './Home.css';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'; 
 import { EditorState, convertFromRaw , convertToRaw} from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { useNavigate } from "react-router-dom";
 
-function ViewNotes(){
+function Home(){
     var CryptoJS = require("crypto-js");
     let email = sessionStorage.getItem('authenticatedUser');
     const [name, setName] = useState("");
@@ -31,8 +32,7 @@ function ViewNotes(){
     const [convertedContent1, setConvertedContent1] = useState("");
     const [editorState, setEditorState] = useState();
     const [editorState1, setEditorState1] = useState(()=>EditorState.createEmpty());
-    const [empty, setEmpty] = useState(false);
-    const [emptylocked, setEmptyLocked] = useState(false);
+    const [emptyall, setEmptyAll] = useState(false);
     const [shareClicked, setShareClicked] = useState(false);
     const [shareEmail, setShareEmail] = useState("");
     const [sharenote,setShareNote] = useState("")
@@ -60,15 +60,15 @@ function ViewNotes(){
     toast.configure()
 
     useEffect(()=>{
-        if(empty===true)
+        if(emptyall===true)
         {
-        setEmpty(true);
+        setEmptyAll(true);
         }
-        if(empty===false)
+        if(emptyall===false)
         {
-        setEmpty(false);
+        setEmptyAll(false);
         }
-    },[empty])
+    },[emptyall])
 
     useEffect(()=>{
         if(sharednull===true)
@@ -102,17 +102,6 @@ function ViewNotes(){
         setNotesClicked(false);
         }
     },[notesclicked])
-
-    useEffect(()=>{
-        if(emptylocked===true)
-        {
-        setEmptyLocked(true);
-        }
-        if(emptylocked===false)
-        {
-        setEmptyLocked(false);
-        }
-    },[emptylocked])
 
     useEffect(()=>{
         if(unlockSuccess===true)
@@ -200,18 +189,12 @@ function ViewNotes(){
                 setSharedNull(true)
             }
             setViewSharedNotes(element.data().sharednotes.reverse())
-            if(element.data().notes.length===0){
-            setEmpty(true)
-        }
-        if(element.data().notes.length>0){
-            setEmpty(false)
-        }
-        if(element.data().noteslocked===0){
-            setEmptyLocked(true)
-        }
-        if(element.data().noteslocked>0){
-            setEmptyLocked(false)
-        }
+            if(element.data().notes.length+element.data().noteslocked.length===0){
+                setEmptyAll(true);
+            }
+            if(element.data().notes.length+element.data().noteslocked.length>0){
+                setEmptyAll(false);
+            }
         } 
         }
         );
@@ -275,12 +258,6 @@ function ViewNotes(){
         toast.error('Please write something to update', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
         }
     }
-    
-    function cancelviewNote(){
-        setUnlockNotes(false)
-        setUnlockSuccess(false)
-        navigate("/welcome")
-    }
 
     function cancelChangeEdit(){
         setClickedEditNote(false)
@@ -340,17 +317,11 @@ function ViewNotes(){
         doc.forEach(element => {
         if(element.data().email===email)
         {
-        if(element.data().notes.length===0){
-        setEmpty(true)
+        if(element.data().notes.length+element.data().noteslocked.length===0){
+            setEmptyAll(true);
         }
-        if(element.data().notes.length>0){
-        setEmpty(false)
-        }
-        if(element.data().noteslocked===0){
-        setEmptyLocked(true)
-        }
-        if(element.data().noteslocked>0){
-        setEmptyLocked(false)
+        if(element.data().notes.length+element.data().noteslocked.length>0){
+            setEmptyAll(false);
         }
         } 
         });
@@ -384,15 +355,6 @@ function ViewNotes(){
         toast.success('Note Locked Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
         update();
         setClicked(false)
-    }
-
-    function unlockNotes(){
-     setUnlockNotes(true);
-    }
-
-    function lockAgain(){
-        setUnlockNotes(false)
-        setUnlockSuccess(false)
     }
 
     function unlockClicked(){
@@ -552,27 +514,28 @@ function ViewNotes(){
         {viewSharedNotesSuccess && !notesclicked && <b>Shared notes</b>}
         <div class="line-separator"></div>
         <div class="scroll">
-            {!viewSharedNotesSuccess && notesClicked && empty &&
+            {!viewSharedNotesSuccess && notesclicked && <div><table class="table table-bordered table-hover">
+            {emptyall &&
                 <table class="table table-bordered table-hover">
                     <tbody>
                     <tr><p style={{ color: 'red' }}>Oops..! You don't have any notes to display</p></tr>
                     </tbody>
                 </table>
             }
-            {!viewSharedNotesSuccess && notesclicked && <div><table class="table table-bordered table-hover">
-                <tbody>{notes.map((notes)=>
+                {!emptyall && <tbody>{notes.map((notes)=>
                 <tr><li style={{cursor:'pointer'}} onClick={() => {editNote(notes)}}>{display(notes)}
                 </li></tr>)
                 }
                 {!unlockSuccess &&lockednotes.map((notes)=>
-                    <tr><li style={{cursor:'pointer'}} onClick={()=>{editNoteLocked(notes)}}><b>Note is Locked &nbsp;</b><i class="fa fa-lock" aria-hidden="true"></i>
+                    <tr><li style={{cursor:'pointer'}} onClick={()=>{editNoteLocked(notes)}}><b>Note is Locked &nbsp;</b>
+                    <i class="fa fa-lock" aria-hidden="true"></i>
                     </li></tr>)
                     }
                 {unlockSuccess && lockednotes.map((notes)=>
                     <tr><li style={{cursor:'pointer'}}  onClick={()=>{editNoteLocked(notes)}}>{display(notes)} <i onClick={()=>unlockNotesRemove(editnotelocked)} class="fa fa-unlock" aria-hidden="true"></i>
                     </li></tr>)
                     }
-                </tbody>
+                </tbody>}
             </table></div>}
             {viewSharedNotesSuccess && !notesclicked && !sharednull && <table class="table table-bordered table-hover">
                 <tbody>{viewsharednotes.map(({sharednote,email})=>
@@ -588,12 +551,20 @@ function ViewNotes(){
         </div>
     </div>
     </div><div class="splitRight">
-    {clicked && clickedEditNote && !shareClicked && <div>
+    {clicked && clickedEditNote && !shareClicked && 
         <div class="image">
-            <i onClick={()=>lockNotes(editnote)} style={{cursor:'pointer'}} title="Lock Note" class="icon fa fa-lock"></i>&nbsp;
-            <i onClick={()=>delNote(editnote)} style={{cursor:'pointer'}} title="Delete" class="icon fa fa-trash"></i>&nbsp;&nbsp;
-            <i onClick={()=>share(editnote)} style={{cursor:'pointer'}} title="share Note" class="icon fa fa-share" aria-hidden="true"></i>
-        </div>
+            <i data-tip data-for="LockTip" onClick={()=>lockNotes(editnote)} style={{cursor:'pointer'}} title="Lock Note" class="icon fa fa-lock"></i>&nbsp;
+            <ReactTooltip id="LockTip" place="top" effect="solid">
+                Lock your note
+            </ReactTooltip>
+            <i data-tip data-for="DeleteTip" onClick={()=>delNote(editnote)} style={{cursor:'pointer'}} title="Delete" class="icon fa fa-trash"></i>&nbsp;&nbsp;
+            <ReactTooltip id="DeleteTip" place="top" effect="solid">
+                Delete your note
+            </ReactTooltip>
+            <i data-tip data-for="ShareTip" onClick={()=>share(editnote)} style={{cursor:'pointer'}} title="share Note" class="icon fa fa-share" aria-hidden="true"></i>
+            <ReactTooltip id="ShareTip" place="top" effect="solid">
+                Share your note
+            </ReactTooltip>
         <div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState}
@@ -644,8 +615,14 @@ function ViewNotes(){
     </div>
     {clicked && !clickedEditNote && clickedEditNoteLocked && unlockSuccess &&
         <div class="image">
-            <i style={{cursor:'pointer'}} onClick={()=>unlockNotesRemove(editnotelocked)} title="Unlock Note" class="icon fa fa-unlock" aria-hidden="true"></i>&nbsp;
-            <i style={{cursor:'pointer'}} onClick={()=>delNoteLocked(editnotelocked)} title="Delete" class="icon fa fa-trash"></i>
+            <i data-tip data-for="UnlockTip" style={{cursor:'pointer'}} onClick={()=>unlockNotesRemove(editnotelocked)} title="Unlock Note" class="icon fa fa-unlock" aria-hidden="true"></i>&nbsp;
+            <ReactTooltip id="UnlockTip" place="top" effect="solid">
+                Unlock your note
+            </ReactTooltip>
+            <i data-tip data-for="DeletedTip" style={{cursor:'pointer'}} onClick={()=>delNoteLocked(editnotelocked)} title="Delete" class="icon fa fa-trash"></i>
+            <ReactTooltip id="DeletedTip" place="top" effect="solid">
+                Delete your note
+            </ReactTooltip>
         <div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState}
@@ -722,7 +699,7 @@ function ViewNotes(){
             />
         </div>
         </div>}
-        {!clicked && <div><br/><br/><b>ADD NEW NOTE</b><div class="shadow mb-3 mt-1 bg-white rounded">
+        {!clicked && <div><b>ADD NEW NOTE</b><div class="shadow mb-3 mt-1 bg-white rounded">
             <Editor
             initialEditorState={editorState1}
             placeholder="Start writing..."
@@ -758,4 +735,4 @@ function ViewNotes(){
  </div>
  );
 }
-export default ViewNotes;
+export default Home;
