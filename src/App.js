@@ -5,13 +5,12 @@ import { BrowserRouter as Router,Routes, Route, Link } from 'react-router-dom';
 import About from "./About";
 import Register from "./Register.jsx";
 import Login from "./Login.jsx";
-import Welcome from "./Welcome";
+import Home from "./Home";
 import withNavigation from "./WithNavigation";
 import Logout from "./Logout";
 import Aroute from "./Aroute";
 import UserProfile from "./UserProfile";
-import AddNotes from "./AddNotes";
-import ViewNotes from "./ViewNotes";
+
 
 function App() {
   const HeaderWithNavigation = withNavigation(Header);
@@ -24,9 +23,7 @@ function App() {
             <Route path="/about" element={<About/>}></Route>
             <Route exact path='/register' element={<Register/>}></Route>
             <Route exact path='/login' element={<Login/>}></Route>
-            <Route path="/welcome" element={<Aroute><Welcome/></Aroute>} />
-            <Route path="/addnotes" element={<Aroute><AddNotes/></Aroute>} />
-            <Route path="/viewnotes" element={<Aroute><ViewNotes/></Aroute>} />
+            <Route path="/home" element={<Aroute><Home/></Aroute>} />
             <Route path="/logout" element={<Aroute><Logout/></Aroute>} />
             <Route path="/profile" element={<Aroute><UserProfile/></Aroute>} />
         </Routes>

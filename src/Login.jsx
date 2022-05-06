@@ -77,7 +77,7 @@ function Login(){
           {
             count=1;
             AuthenticationService.registerSuccessfulLogin(user.email,user.googleId)
-            navigate("/viewnotes",{state:{email:user.email}})
+            navigate("/home",{state:{email:user.email}})
           }
         }
       )
@@ -93,14 +93,14 @@ function Login(){
       setUserEmail("");
       setUserMobile("");
       AuthenticationService.registerSuccessfulLogin(user.email,user.googleId)
-      navigate("/viewnotes",{state:{email:user.email}})
+      navigate("/home",{state:{email:user.email}})
     }
     }));
   };
   
   const sendSubmit = () => {
       AuthenticationService.registerSuccessfulLogin(userEmail,userPassword)
-      navigate("/viewnotes",{state:{email:userEmail}});
+      navigate("/home",{state:{email:userEmail}});
       
   };
   const loginClicked= (e) => {

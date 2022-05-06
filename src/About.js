@@ -73,7 +73,6 @@ function About(){
                 <div class="col-xl-3 col-sm-6 mb-5">
                     <div class="bg-white rounded shadow-sm py-5 px-4"><img src="https://avatars.githubusercontent.com/u/98074957?s=400&u=a990ce8b34faf068c1e1317bce763e07501e2e3a&v=4" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm"></img>
                     <h5 class="mb-0">Sushma</h5>
-                    <a href="#!"><i class="fa fa-instagram"></i></a>
                     <ul class="social mb-0 list-inline mt-3">
                         <li class="list-inline-item"><a href="https://instagram.com/sushma__chitturi?utm_medium=copy_link" class="social-link"><FontAwesomeIcon icon={faInstagram} size="2x" /></a></li>
                         <li class="list-inline-item"><a href="https://www.linkedin.com/in/sushma-chitturi-2ab024128" class="social-link"><FontAwesomeIcon icon={faLinkedin} size="2x" /></a></li>
