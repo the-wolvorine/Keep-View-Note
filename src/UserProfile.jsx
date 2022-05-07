@@ -19,6 +19,7 @@ function UserProfile(){
     const [nameErr,setNameErr] = useState({});
     const [mobileErr,setMobileErr] = useState({});
     const [passwordErr,setPasswordErr] = useState({});
+    const [mobilenumberValue, setmobilenumberValue] = useState("");
 
     const nameValidation = () =>{
         const nameErr = {};
@@ -39,28 +40,58 @@ function UserProfile(){
       
       }
 
-      const mobileValidation = () =>{
-        const mobileErr = {};
-        let isValid = true;
+      // const mobileValidation = () =>{
+      //   const mobileErr = {};
+      //   let isValid = true;
 
-        if(userMobile.trim().length>10){
-          mobileErr.invalidMobile= "Please enter valid mobile number"
-          isValid = false;
-        }
-        if(userMobile.trim().length<10 && !userMobile.length<1){
-          mobileErr.invalidMobile= "Please enter valid mobile number"
-          isValid = false;
-        }
+      //   if(userMobile.trim().length>10){
+      //     mobileErr.invalidMobile= "Please enter valid mobile number"
+      //     isValid = false;
+      //   }
+      //   if(userMobile.trim().length<10 && !userMobile.length<1){
+      //     mobileErr.invalidMobile= "Please enter valid mobile number"
+      //     isValid = false;
+      //   }
 
-        if(userMobile.length<1){
-          mobileErr.mobileEnter= "Please enter your mobile number"
-          isValid = false;
+      //   if(userMobile.length<1){
+      //     mobileErr.mobileEnter= "Please enter your mobile number"
+      //     isValid = false;
+      //   }
+      
+      //   setMobileErr(mobileErr);
+      //   return isValid;
+      
+      // }
+
+      function formatPhoneNumber(value) {
+        if (!value) return value;
+      
+        const phoneNumber = value.replace(/[^\d]/g, "");
+        const flag = "+1 "
+      
+        const phoneNumberLength = phoneNumber.length;
+    
+        if (phoneNumberLength < 4) return phoneNumber;
+      
+        if (phoneNumberLength < 7) {
+          return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
         }
-      
-        setMobileErr(mobileErr);
-        return isValid;
-      
+        if(phoneNumberLength===10){
+          return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+            3,
+            6
+          )}-${phoneNumber.slice(6, 10)}`;
+        }
+        return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+          3,
+          6
+        )}-${phoneNumber.slice(6, 9)}`;
       }
+
+      const handleInputMobile = (e) => {
+        const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+        setmobilenumberValue(formattedPhoneNumber);
+      };
 
       const passwordValidation = () =>{
         const passwordErr = {};
@@ -109,7 +140,7 @@ function UserProfile(){
                 setName(doc.data().name)
                 setMobile(doc.data().mobile)
                 setUserName(doc.data().name)
-                setUserMobile(doc.data().mobile)
+                setmobilenumberValue(doc.data().mobile)
             }
         });
      })
@@ -184,23 +215,23 @@ function UserProfile(){
     }
     }
     function changeMobileSubmit(){
-        const isValid = mobileValidation();
-        if(isValid){
+        // const isValid = mobileValidation();
+        // if(isValid){
         db.collection("usersData").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 if(doc.data().email===email)
                 {
                     db.collection("usersData").doc(doc.id).set({
-                        "mobile": userMobile
+                        "mobile": mobilenumberValue
                       },
                       {merge:true})
                 }
             });
         })
-        setMobile(userMobile)
+        setMobile(mobilenumberValue)
         setClickedMobile(false)
         toast.success('Mobile number updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
-    }
+    // }
     }
     function cancelEditName()
     {
@@ -274,10 +305,10 @@ function UserProfile(){
                      })}
                     <h6>Phone</h6>
                     {!clickedMobile && <p class="text-muted" onClick={changeMobile} >{mobile}&nbsp;&nbsp;</p>}
-                    {clickedMobile && <input type="text" value={userMobile} onChange={(e) => setUserMobile(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { changeMobileSubmit();}}}></input>}
-                    {Object.keys(mobileErr).map((key)=>{
+                    {clickedMobile && <input type="text" onChange={(e) => handleInputMobile(e)} value={mobilenumberValue} onKeyPress={(e) => { if (e.key === "Enter") { changeMobileSubmit();}}}></input>}
+                    {/* {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
-                     })}
+                     })} */}
                     <h6>Email</h6>
                     <p class="text-muted">{email}</p>
                     {!clickedPassword && <a onClick={changePassword} class="fw-bold text-body" href="#"><u>Change Password</u></a>}
