@@ -42,7 +42,20 @@ function Home(){
     const [sharedEmail,setSharedEmail ] = useState("")
     const [notesclicked, setNotesClicked ] = useState(true)
     const [sharednull, setSharedNull] = useState(false);
-    const navigate = useNavigate();
+    var [date,setDate] = useState(new Date());
+
+    var today = new Date()
+    var curHr = today.getHours()
+
+    function welcomeMessage(){
+    if (curHr < 12) {
+    return 'Good Morning'
+    } else if (curHr < 18) {
+    return 'Good Afternoon'
+    } else {
+    return 'Good Evening'
+    }
+    } 
 
     function sm(notes){
         var bytes = CryptoJS.AES.decrypt(notes, email);
@@ -58,6 +71,14 @@ function Home(){
 
 
     toast.configure()
+
+    useEffect(() => {
+        var timer = setInterval(()=>setDate(new Date()), 1000 )
+        return function cleanup() {
+            clearInterval(timer)
+        }
+    
+    });
 
     useEffect(()=>{
         if(emptyall===true)
@@ -503,7 +524,7 @@ function Home(){
  <div class="container-sm">
     <div class="row">
         <div class="content border rounded border-dark shadow p-3 mb-2 bg-white rounded">
-            <h6 class="category">Welcome, {name}</h6>
+            <h6 class="category">{welcomeMessage()}, &nbsp;<b>{name}</b> <h6 style={{position: 'absolute', right: 55, top:100}}>{date.toLocaleString('en-us', { month: 'long',day: '2-digit', year: 'numeric' })} &emsp;{date.toLocaleTimeString()}</h6></h6>
         </div>
     <div className="splitLeft">
         <button class="btn active btn-outline-dark btn-sm" onClick={()=>setClicked(false)}> <i class="fa fa-plus"></i> <b>Add Note</b></button>
