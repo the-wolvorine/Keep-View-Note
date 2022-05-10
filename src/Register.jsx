@@ -12,7 +12,7 @@ import Login from "./Login";
 function Register() {
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  // const [userMobile, setUserMobile] = useState("");
+  const [userMobile, setUserMobile] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [nameErr,setNameErr] = useState({});
   const [emailErr,setEmailErr] = useState({});
@@ -76,15 +76,16 @@ function Register() {
       name: userName,
       password: userPassword,
       email: userEmail,
-      mobile: mobilenumberValue,
+      mobile: userMobile,
       notes: [],
       noteslocked: []
     });
 
     setUserName("");
     setUserPassword("");
-    // setUserMobile("");
+    setUserMobile("");
     setUserEmail("");
+    setmobilenumberValue("");
     alertF()
   };
 }
@@ -93,7 +94,7 @@ function Register() {
 const formValidation = () =>{
   const nameErr = {};
   const emailErr = {};
-  // const mobileErr = {};
+  const mobileErr = {};
   const passwordErr = {};
   let isValid = true;
   const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$');
@@ -131,14 +132,14 @@ const formValidation = () =>{
     nameErr.nameShort= "Name is too short"
     isValid = false;
   }
-  // if(userMobile.trim().length>10){
-  //   mobileErr.invalidMobile= "Please enter valid mobile number"
-  //   isValid = false;
-  // }
-  // if(userMobile.trim().length<10 && !userMobile.length<1){
-  //   mobileErr.invalidMobile= "Please enter valid mobile number"
-  //   isValid = false;
-  // }
+  if(userMobile.trim().length>10  ){
+    mobileErr.invalidMobile= "Please enter valid mobile number"
+    isValid = false;
+  }
+  if(userMobile.trim().length<10 && !userMobile.length<1){
+    mobileErr.invalidMobile= "Please enter valid mobile number"
+    isValid = false;
+  }
   if(userPassword.length<8 && !userPassword.length<1){
     passwordErr.passwordShort= "Password is too short"
     isValid = false;
@@ -155,10 +156,10 @@ const formValidation = () =>{
     nameErr.nameEnter= "Please enter your Name"
     isValid = false;
   }
-  // if(userMobile.length<1){
-  //   mobileErr.mobileEnter= "Please enter your mobile number"
-  //   isValid = false;
-  // }
+  if(userMobile.length<1){
+    mobileErr.mobileEnter= "Please enter your mobile number"
+    isValid = false;
+  }
 
   setNameErr(nameErr);
   setEmailErr(emailErr);
@@ -179,6 +180,7 @@ const formValidation = () =>{
     if (!value) return value;
   
     const phoneNumber = value.replace(/[^\d]/g, "");
+    setUserMobile(phoneNumber)
   
     const phoneNumberLength = phoneNumber.length;
 
@@ -227,9 +229,9 @@ const formValidation = () =>{
                   </div> 
                   <div class="form-outline mb-4">
                     <input type="text" id="form3Example4cdg" class="form-control form-control-lg bfh-phone"  placeholder="Mobile" onChange={(e) => handleInputMobile(e)} value={mobilenumberValue}/>
-                    {/* {Object.keys(mobileErr).map((key)=>{
+                    {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
-                     })} */}
+                     })}
                   </div>
                   <div class="form-outline mb-4">
                     <input type="password" id="form3Example4cg" class="form-control form-control-lg" placeholder="Password"  value={userPassword} onChange={(e) => setUserPassword(e.target.value)}/>  

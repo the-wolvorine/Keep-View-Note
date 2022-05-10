@@ -40,34 +40,34 @@ function UserProfile(){
       
       }
 
-      // const mobileValidation = () =>{
-      //   const mobileErr = {};
-      //   let isValid = true;
+      const mobileValidation = () =>{
+        const mobileErr = {};
+        let isValid = true;
 
-      //   if(userMobile.trim().length>10){
-      //     mobileErr.invalidMobile= "Please enter valid mobile number"
-      //     isValid = false;
-      //   }
-      //   if(userMobile.trim().length<10 && !userMobile.length<1){
-      //     mobileErr.invalidMobile= "Please enter valid mobile number"
-      //     isValid = false;
-      //   }
+        if(userMobile.trim().length>10){
+          mobileErr.invalidMobile= "Please enter valid mobile number"
+          isValid = false;
+        }
+        if(userMobile.trim().length<10 && !userMobile.length<1){
+          mobileErr.invalidMobile= "Please enter valid mobile number"
+          isValid = false;
+        }
 
-      //   if(userMobile.length<1){
-      //     mobileErr.mobileEnter= "Please enter your mobile number"
-      //     isValid = false;
-      //   }
+        if(userMobile.length<1){
+          mobileErr.mobileEnter= "Please enter your mobile number"
+          isValid = false;
+        }
       
-      //   setMobileErr(mobileErr);
-      //   return isValid;
+        setMobileErr(mobileErr);
+        return isValid;
       
-      // }
+      }
 
       function formatPhoneNumber(value) {
         if (!value) return value;
       
         const phoneNumber = value.replace(/[^\d]/g, "");
-        const flag = "+1 "
+        setUserMobile(phoneNumber)
       
         const phoneNumberLength = phoneNumber.length;
     
@@ -87,6 +87,20 @@ function UserProfile(){
           6
         )}-${phoneNumber.slice(6, 9)}`;
       }
+
+      function DisplayMobileNumber(value) {
+        if (!value) return value;
+      
+        const phoneNumber = value.replace(/[^\d]/g, "");
+        setUserMobile(phoneNumber)
+      
+        const phoneNumberLength = phoneNumber.length;
+          setmobilenumberValue(`(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+            3,
+            6
+          )}-${phoneNumber.slice(6, 10)}`);
+      }
+
 
       const handleInputMobile = (e) => {
         const formattedPhoneNumber = formatPhoneNumber(e.target.value);
@@ -140,7 +154,7 @@ function UserProfile(){
                 setName(doc.data().name)
                 setMobile(doc.data().mobile)
                 setUserName(doc.data().name)
-                setmobilenumberValue(doc.data().mobile)
+                DisplayMobileNumber(doc.data().mobile)
             }
         });
      })
@@ -215,23 +229,23 @@ function UserProfile(){
     }
     }
     function changeMobileSubmit(){
-        // const isValid = mobileValidation();
-        // if(isValid){
+        const isValid = mobileValidation();
+        if(isValid){
         db.collection("usersData").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 if(doc.data().email===email)
                 {
                     db.collection("usersData").doc(doc.id).set({
-                        "mobile": mobilenumberValue
+                        "mobile": userMobile
                       },
                       {merge:true})
                 }
             });
         })
-        setMobile(mobilenumberValue)
+        setMobile(userMobile)
         setClickedMobile(false)
         toast.success('Mobile number updated Succesfully', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
-    // }
+    }
     }
     function cancelEditName()
     {
@@ -304,11 +318,11 @@ function UserProfile(){
                     return <div style={{color : "red"}}>{nameErr[key]}</div>
                      })}
                     <h6>Phone</h6>
-                    {!clickedMobile && <p class="text-muted" onClick={changeMobile} >{mobile}&nbsp;&nbsp;</p>}
+                    {!clickedMobile && <p class="text-muted" onClick={changeMobile} >{mobilenumberValue}&nbsp;&nbsp;</p>}
                     {clickedMobile && <input type="text" onChange={(e) => handleInputMobile(e)} value={mobilenumberValue} onKeyPress={(e) => { if (e.key === "Enter") { changeMobileSubmit();}}}></input>}
-                    {/* {Object.keys(mobileErr).map((key)=>{
+                    {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
-                     })} */}
+                     })}
                     <h6>Email</h6>
                     <p class="text-muted">{email}</p>
                     {!clickedPassword && <a onClick={changePassword} class="fw-bold text-body" href="#"><u>Change Password</u></a>}
