@@ -19,6 +19,7 @@ function Register() {
   const [mobileErr,setMobileErr] = useState({});
   const [passwordErr,setPasswordErr] = useState({});
   const [valid,setValid] = useState(true); 
+  const [mobilenumberValue, setmobilenumberValue] = useState("");
   const navigate = useNavigate();
 
   toast.configure()
@@ -84,6 +85,7 @@ function Register() {
     setUserPassword("");
     setUserMobile("");
     setUserEmail("");
+    setmobilenumberValue("");
     alertF()
   };
 }
@@ -130,7 +132,7 @@ const formValidation = () =>{
     nameErr.nameShort= "Name is too short"
     isValid = false;
   }
-  if(userMobile.trim().length>10){
+  if(userMobile.trim().length>10  ){
     mobileErr.invalidMobile= "Please enter valid mobile number"
     isValid = false;
   }
@@ -174,6 +176,36 @@ const formValidation = () =>{
     },2500)
   }
 
+  function formatPhoneNumber(value) {
+    if (!value) return value;
+  
+    const phoneNumber = value.replace(/[^\d]/g, "");
+    setUserMobile(phoneNumber)
+  
+    const phoneNumberLength = phoneNumber.length;
+
+    if (phoneNumberLength < 4) return phoneNumber;
+  
+    if (phoneNumberLength < 7) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    }
+    if(phoneNumberLength===10){
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+        3,
+        6
+      )}-${phoneNumber.slice(6, 10)}`;
+    }
+    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+      3,
+      6
+    )}-${phoneNumber.slice(6, 10)}`;
+  }
+
+  const handleInputMobile = (e) => {
+    const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+    setmobilenumberValue(formattedPhoneNumber);
+  };
+
   return (
     <div class="mask d-flex align-items-center gradient-custom-3">
       <div class="container">
@@ -196,7 +228,7 @@ const formValidation = () =>{
                      })}
                   </div> 
                   <div class="form-outline mb-4">
-                    <input type="text" id="form3Example4cdg" class="form-control form-control-lg bfh-phone" data-format="+1 (ddd) ddd-dddd" placeholder="Mobile" value={userMobile} onChange={(e) => setUserMobile(e.target.value)}/>
+                    <input type="text" id="form3Example4cdg" class="form-control form-control-lg bfh-phone"  placeholder="Mobile" onChange={(e) => handleInputMobile(e)} value={mobilenumberValue}/>
                     {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
                      })}

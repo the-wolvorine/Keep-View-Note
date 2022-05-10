@@ -19,6 +19,7 @@ function UserProfile(){
     const [nameErr,setNameErr] = useState({});
     const [mobileErr,setMobileErr] = useState({});
     const [passwordErr,setPasswordErr] = useState({});
+    const [mobilenumberValue, setmobilenumberValue] = useState("");
 
     const nameValidation = () =>{
         const nameErr = {};
@@ -61,6 +62,50 @@ function UserProfile(){
         return isValid;
       
       }
+
+      function formatPhoneNumber(value) {
+        if (!value) return value;
+      
+        const phoneNumber = value.replace(/[^\d]/g, "");
+        setUserMobile(phoneNumber)
+      
+        const phoneNumberLength = phoneNumber.length;
+    
+        if (phoneNumberLength < 4) return phoneNumber;
+      
+        if (phoneNumberLength < 7) {
+          return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+        }
+        if(phoneNumberLength===10){
+          return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+            3,
+            6
+          )}-${phoneNumber.slice(6, 10)}`;
+        }
+        return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+          3,
+          6
+        )}-${phoneNumber.slice(6, 9)}`;
+      }
+
+      function DisplayMobileNumber(value) {
+        if (!value) return value;
+      
+        const phoneNumber = value.replace(/[^\d]/g, "");
+        setUserMobile(phoneNumber)
+      
+        const phoneNumberLength = phoneNumber.length;
+          setmobilenumberValue(`(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+            3,
+            6
+          )}-${phoneNumber.slice(6, 10)}`);
+      }
+
+
+      const handleInputMobile = (e) => {
+        const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+        setmobilenumberValue(formattedPhoneNumber);
+      };
 
       const passwordValidation = () =>{
         const passwordErr = {};
@@ -109,7 +154,7 @@ function UserProfile(){
                 setName(doc.data().name)
                 setMobile(doc.data().mobile)
                 setUserName(doc.data().name)
-                setUserMobile(doc.data().mobile)
+                DisplayMobileNumber(doc.data().mobile)
             }
         });
      })
@@ -273,8 +318,8 @@ function UserProfile(){
                     return <div style={{color : "red"}}>{nameErr[key]}</div>
                      })}
                     <h6>Phone</h6>
-                    {!clickedMobile && <p class="text-muted" onClick={changeMobile} >{mobile}&nbsp;&nbsp;</p>}
-                    {clickedMobile && <input type="text" value={userMobile} onChange={(e) => setUserMobile(e.target.value)} onKeyPress={(e) => { if (e.key === "Enter") { changeMobileSubmit();}}}></input>}
+                    {!clickedMobile && <p class="text-muted" onClick={changeMobile} >{mobilenumberValue}&nbsp;&nbsp;</p>}
+                    {clickedMobile && <input type="text" onChange={(e) => handleInputMobile(e)} value={mobilenumberValue} onKeyPress={(e) => { if (e.key === "Enter") { changeMobileSubmit();}}}></input>}
                     {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
                      })}
