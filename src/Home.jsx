@@ -209,13 +209,13 @@ function Home(){
             if(element.data().sharednotes===null){
                 setSharedNull(true)
             }
-            setViewSharedNotes(element.data().sharednotes.reverse())
             if(element.data().notes.length+element.data().noteslocked.length===0){
                 setEmptyAll(true);
             }
             if(element.data().notes.length+element.data().noteslocked.length>0){
                 setEmptyAll(false);
             }
+            setViewSharedNotes(element.data().sharednotes.reverse())
         } 
         }
         );
@@ -226,8 +226,8 @@ function Home(){
         db.collection("usersData").doc(id).get().then((function(doc){
         setLockedNotes(doc.data().noteslocked.reverse())
         setNotes(doc.data().notes.reverse())
-        setViewSharedNotes(doc.data().sharednotes)
         updateEmpty()
+        setViewSharedNotes(doc.data().sharednotes)
     }))
     }
     function handleChangeEdit(){
@@ -537,11 +537,9 @@ function Home(){
         <div class="scroll">
             {!viewSharedNotesSuccess && notesclicked && <div><table class="table table-bordered table-hover">
             {emptyall &&
-                <table class="table table-bordered table-hover">
                     <tbody>
                     <tr><p style={{ color: 'red' }}>Oops..! You don't have any notes to display</p></tr>
                     </tbody>
-                </table>
             }
                 {!emptyall && <tbody>{notes.map((notes)=>
                 <tr><li style={{cursor:'pointer'}} onClick={() => {editNote(notes)}}>{display(notes)}

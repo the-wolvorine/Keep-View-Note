@@ -28,7 +28,7 @@ function Header() {
                     {!isUserLoggedIn && <li class="custom-li mobile">
                         <a class="nav-link text-dark">
                             <span class="border border-dark rounded h-25 d-inline-block w-70 p-2">
-                            <Link class="nav-link active text-dark" to="/register">Sign Up</Link></span>
+                            <Link class="nav-link active text-dark" to="/login">Sign In</Link></span>
                         </a>
                     </li>}
                     {isUserLoggedIn && <li class="custom-li mobile"><a class="nav-link text-dark">

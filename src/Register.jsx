@@ -170,10 +170,11 @@ const formValidation = () =>{
 }
   
   function alertF(){
-      toast.success('Registered Succesfully. Please Login to Continue', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+      toast.success('Registered Succesfully. Signing you in...', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
       setTimeout(function(){
-      navigate("/login")
-    },2500)
+        AuthenticationService.registerSuccessfulLogin(userEmail,userPassword)
+        navigate("/home",{state:{email:userEmail}})
+    },3000)
   }
 
   function formatPhoneNumber(value) {
