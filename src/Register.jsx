@@ -180,25 +180,32 @@ const formValidation = () =>{
     if (!value) return value;
   
     const phoneNumber = value.replace(/[^\d]/g, "");
-    setUserMobile(phoneNumber)
   
     const phoneNumberLength = phoneNumber.length;
 
-    if (phoneNumberLength < 4) return phoneNumber;
-  
-    if (phoneNumberLength < 7) {
+    if (phoneNumberLength < 4){
+      setUserMobile(phoneNumber)
+      return phoneNumber;
+    }
+
+    else if (phoneNumberLength < 7) {
+      setUserMobile(phoneNumber)
       return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
     }
-    if(phoneNumberLength===10){
+    else if(phoneNumberLength===10){
+      setUserMobile(phoneNumber)
       return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
         3,
         6
       )}-${phoneNumber.slice(6, 10)}`;
     }
-    return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+    else {
+      setUserMobile(phoneNumber.slice(0,10))
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
       3,
       6
     )}-${phoneNumber.slice(6, 10)}`;
+    }
   }
 
   const handleInputMobile = (e) => {
