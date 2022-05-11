@@ -310,7 +310,7 @@ function UserProfile(){
                 class="img-fluid my-5"
                 // style={{width: '80px'}}
               />
-               <i class="far fa-edit mb-5"></i>
+               {/* <i class="far fa-edit mb-5"></i> */}
             </div>
             <div class="col-md-8">
               <div class="card-body p-4">
