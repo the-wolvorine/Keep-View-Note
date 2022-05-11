@@ -1,8 +1,12 @@
 import db from "./config";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {toast} from 'react-toastify';
+import AuthenticationService from "./AuthenticationService";
 import "./App.css";
 import "./Register.css";
 import 'bootstrap/dist/css/bootstrap.css';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from "./Login";
   
 function Register() {
@@ -10,12 +14,15 @@ function Register() {
   const [userPassword, setUserPassword] = useState("");
   const [userMobile, setUserMobile] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [usersData, setUsersData] = useState([]);
   const [nameErr,setNameErr] = useState({});
   const [emailErr,setEmailErr] = useState({});
   const [mobileErr,setMobileErr] = useState({});
   const [passwordErr,setPasswordErr] = useState({});
   const [valid,setValid] = useState(true); 
+  const [mobilenumberValue, setmobilenumberValue] = useState("");
+  const navigate = useNavigate();
+
+  toast.configure()
 
   useEffect(() => {
     const emailErr = {};
@@ -69,13 +76,16 @@ function Register() {
       name: userName,
       password: userPassword,
       email: userEmail,
-      mobile: userMobile
+      mobile: userMobile,
+      notes: [],
+      noteslocked: []
     });
 
     setUserName("");
     setUserPassword("");
     setUserMobile("");
     setUserEmail("");
+    setmobilenumberValue("");
     alertF()
   };
 }
@@ -122,7 +132,7 @@ const formValidation = () =>{
     nameErr.nameShort= "Name is too short"
     isValid = false;
   }
-  if(userMobile.trim().length>10){
+  if(userMobile.trim().length>10  ){
     mobileErr.invalidMobile= "Please enter valid mobile number"
     isValid = false;
   }
@@ -160,8 +170,49 @@ const formValidation = () =>{
 }
   
   function alertF(){
-      alert("Registered Succesfully")
+      toast.success('Registered Succesfully. Signing you in...', { position: toast.POSITION.BOTTOM_CENTER, autoClose:2000})
+      setTimeout(function(){
+        AuthenticationService.registerSuccessfulLogin(userEmail,userPassword)
+        navigate("/home",{state:{email:userEmail}})
+    },3000)
   }
+
+  function formatPhoneNumber(value) {
+    if (!value) return value;
+  
+    const phoneNumber = value.replace(/[^\d]/g, "");
+  
+    const phoneNumberLength = phoneNumber.length;
+
+    if (phoneNumberLength < 4){
+      setUserMobile(phoneNumber)
+      return phoneNumber;
+    }
+
+    else if (phoneNumberLength < 7) {
+      setUserMobile(phoneNumber)
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    }
+    else if(phoneNumberLength===10){
+      setUserMobile(phoneNumber)
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+        3,
+        6
+      )}-${phoneNumber.slice(6, 10)}`;
+    }
+    else {
+      setUserMobile(phoneNumber.slice(0,10))
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(
+      3,
+      6
+    )}-${phoneNumber.slice(6, 10)}`;
+    }
+  }
+
+  const handleInputMobile = (e) => {
+    const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+    setmobilenumberValue(formattedPhoneNumber);
+  };
 
   return (
     <div class="mask d-flex align-items-center gradient-custom-3">
@@ -185,7 +236,7 @@ const formValidation = () =>{
                      })}
                   </div> 
                   <div class="form-outline mb-4">
-                    <input type="tel" id="form3Example4cdg" class="form-control form-control-lg" placeholder="Mobile" value={userMobile} onChange={(e) => setUserMobile(e.target.value)}/>
+                    <input type="text" id="form3Example4cdg" class="form-control form-control-lg bfh-phone"  placeholder="Mobile" onChange={(e) => handleInputMobile(e)} value={mobilenumberValue}/>
                     {Object.keys(mobileErr).map((key)=>{
                     return <div style={{color : "red"}}>{mobileErr[key]}</div>
                      })}
