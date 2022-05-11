@@ -27,6 +27,10 @@
     height: 2px;
 }
 
+.toolbar-class {
+    position: relative;
+}
+
 .scroll{
     overflow-y: scroll;
     max-height: 31rem;
@@ -34,4 +38,9 @@
 
 .icon {
     padding: 2px;
+}
+
+.category {
+    display: grid;
+    grid-auto-flow: column;
 }

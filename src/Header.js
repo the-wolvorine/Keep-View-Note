@@ -2,7 +2,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './Header.css';
 import logo from './logo.jpg';
 import { Link } from 'react-router-dom';
-import Logout from './Logout';
 import AuthenticationService from './AuthenticationService';
 
 function Header() {
@@ -11,8 +10,8 @@ function Header() {
         <header class="header-css">
             <div class="shadow-lg p-3 bg-white rounded">
                 <nav class="navbar navbar-expand-lg navbar-custom">
-                    <a class="navbar-brand mobile" href="#">
-                    <img src={logo} alt="..." height="50" />
+                    <a class="navbar-brand mobile" href="/">
+                    <img src={logo} alt="Keep View Note" height="50" />
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

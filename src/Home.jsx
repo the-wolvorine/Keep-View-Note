@@ -404,12 +404,15 @@ function Home(){
     }
 
     const wrapperStyle = {
-        border: '1px solid #969696',
+        border: '1px solid black',
+        minWidth: '20rem',
+        maxWidth: '52rem',
+        minHeight: '32rem'
     }
+    
     const editorStyle = {
         height:'28rem',
-        padding:'1rem'
-    
+        paddingLeft:'1rem'
     }
 
     const handleEditorChange = (state) => {
@@ -523,8 +526,9 @@ function Home(){
  return(
  <div class="container-sm">
     <div class="row">
-        <div class="content border rounded border-dark shadow p-3 mb-2 bg-white rounded">
-            <h6 class="category">{welcomeMessage()}, &nbsp;<b>{name}</b> <h6 style={{position: 'absolute', right: 55, top:100}}>{date.toLocaleString('en-us', { month: 'long',day: '2-digit', year: 'numeric' })} &emsp;{date.toLocaleTimeString()}</h6></h6>
+        <div class="content category border rounded border-dark shadow p-3 mb-2 bg-white rounded">
+            <h6>{welcomeMessage()}, <b>{name}</b></h6>
+            <h6 style={{justifySelf: 'flex-end'}}>{date.toLocaleString('en-us', { month: 'long',day: '2-digit', year: 'numeric' })} &emsp;{date.toLocaleTimeString()}</h6>
         </div>
     <div className="splitLeft">
         <button class="btn active btn-outline-dark btn-sm" onClick={()=>setClicked(false)}> <i class="fa fa-plus"></i> <b>Add Note</b></button>
@@ -616,22 +620,20 @@ function Home(){
     <button class="btn btn-outline-dark" onClick={handleChangeEdit}>Save</button>&nbsp;
     <button class="btn btn-dark" onClick={cancelChangeEdit}>Cancel</button></div>
     }
-    <div class="splitRight">
-        {clicked && clickedEditNote && shareClicked &&
-        <div class="card-body p-5">
-            <h4 class="text-capitalize p-2">Enter email to share this note:</h4>
-            <form>
-                <div class="form-outline mb-5">
-                <input type="email" class="form-control form-control-lg" style={{maxWidth: '75%'}} placeholder="Enter Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
-                <div>
-                <button class="btn btn-outline-dark" style={{padding: '10px', minWidth: '90px'}} onClick={shareSubmit}>Submit</button>&nbsp;&nbsp;
-                <button class="btn btn-dark" style={{padding: '10px', minWidth: '90px'}} onClick={cancelShare}>Cancel</button>
-                </div>
-                </div>
-            </form>
-        </div>
-        }
+    {clicked && clickedEditNote && shareClicked &&
+    <div class="card-body p-5">
+        <h4 class="text-capitalize p-2">Enter email to share this note:</h4>
+        <form>
+            <div class="form-outline mb-5">
+            <input type="email" class="form-control form-control-lg" style={{maxWidth: '75%'}} placeholder="Enter Email" value={shareEmail} onChange={(e) => setShareEmail(e.target.value)}/>&nbsp;
+            <div>
+            <button class="btn btn-outline-dark" style={{padding: '10px', minWidth: '90px'}} onClick={shareSubmit}>Submit</button>&nbsp;&nbsp;
+            <button class="btn btn-dark" style={{padding: '10px', minWidth: '90px'}} onClick={cancelShare}>Cancel</button>
+            </div>
+            </div>
+        </form>
     </div>
+    }
     {clicked && !clickedEditNote && clickedEditNoteLocked && unlockSuccess &&
         <div class="image">
             <i data-tip data-for="UnlockTip" style={{cursor:'pointer'}} onClick={()=>unlockNotesRemove(editnotelocked)} title="Unlock Note" class="icon fa fa-unlock" aria-hidden="true"></i>&nbsp;
@@ -651,7 +653,7 @@ function Home(){
             wrapperStyle={wrapperStyle}
             editorStyle={editorStyle}
             toolbarClassName="toolbar-class"
-            editorClassName="demo-editor" 
+            editorClassName="demo-editor"
             onEditorStateChange={handleEditorChange}
             toolbar={{
             options: ['inline', 'blockType', 'textAlign', 
